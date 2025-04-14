@@ -6,6 +6,9 @@ import ReadPage from './pagesCRUD/ReadPage'
 import UpdatePage from './pagesCRUD/UpdatePage'
 import DeletePage from './pagesCRUD/DeletePage'
 
+// styling
+import './css/other.css'
+
 function App() {
   return (
     <>
