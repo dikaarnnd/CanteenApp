@@ -10,6 +10,9 @@ import DeletePage from './pagesCRUD/DeletePage'
 import Register from './pages/Auth/Register'
 import Login from './pages/Auth/Login'
 
+// pages
+import Home from './pages/Customer/Home'
+
 function App() {
   return (
     <>
@@ -23,6 +26,7 @@ function App() {
         <Route path="/delete" element={<DeletePage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </>
   )

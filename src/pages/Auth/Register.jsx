@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../supabaseClient'
 import bcrypt from 'bcryptjs'
 
-export default function RegisterPage() {
+export default function Register() {
   const [nim, setNim] = useState('')
   const [nama, setNama] = useState('')
   const [password, setPassword] = useState('')

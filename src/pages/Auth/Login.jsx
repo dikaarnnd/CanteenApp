@@ -10,7 +10,7 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     const { data, error } = await supabase
-      .from('profile')
+      .from('mahasiswa')
       .select('*')
       .eq('nim', nim)
       .single()
@@ -21,7 +21,7 @@ export default function LoginPage() {
 
     if (match) {
       alert('Login berhasil!')
-      navigate('/home') // 👉 Redirect ke halaman home
+      navigate('/home')
     } else {
       alert('Password salah!')
     }
