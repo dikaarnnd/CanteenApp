@@ -12,21 +12,33 @@ import Login from './pages/Auth/Login'
 
 // pages
 import Home from './pages/Customer/Home'
+import Profile from './pages/Customer/Profile'
+
+// components
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
     <>
-      <nav>
+      {/* <nav>
         <Link to="/">Read</Link> | <Link to="/create">Create</Link> | <Link to="/update">Update</Link> | <Link to="/delete">Delete</Link> | <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
-      </nav>
+      </nav> */}
       <Routes>
         <Route path="/" element={<ReadPage />} />
-        <Route path="/create" element={<CreatePage />} />
-        <Route path="/update" element={<UpdatePage />} />
-        <Route path="/delete" element={<DeletePage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/home" element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   )

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../supabaseClient'
 import bcrypt from 'bcryptjs'
+import { Link } from 'react-router-dom'
 
 export default function LoginPage() {
   const [nim, setNim] = useState('')
@@ -20,7 +21,8 @@ export default function LoginPage() {
     const match = await bcrypt.compare(password, data.password)
 
     if (match) {
-      alert('Login berhasil!')
+      // alert('Login berhasil!')
+      localStorage.setItem('nim', data.nim) // simpan info login
       navigate('/home')
     } else {
       alert('Password salah!')
@@ -49,6 +51,7 @@ export default function LoginPage() {
       >
         Login
       </button>
+      <Link to="/register">Register</Link>
     </div>
   )
 }
