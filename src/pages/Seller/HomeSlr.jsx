@@ -3,12 +3,9 @@ import { useNavigate } from 'react-router-dom'
 export default function HomeSlr() {
   const navigate = useNavigate()
 
-  const id = localStorage.getItem('id')
-  if (!id) navigate('/loginslr')
-
   const handleLogout = () => {
     // Hapus session/login state jika kamu menyimpannya
-    localStorage.removeItem('id')
+    localStorage.clear()
     // Redirect ke halaman login
     navigate('/loginslr')
   }

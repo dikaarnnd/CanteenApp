@@ -1,10 +1,24 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 
 export default function ProtectedRoute({ children }) {
-  const isLoggedIn = localStorage.getItem('nim')
+  const nim = localStorage.getItem('nim')
+  const id = localStorage.getItem('id')
+  const role = localStorage.getItem('role')
+  const location = useLocation()
+  const path = location.pathname
 
-  if (!isLoggedIn) {
-    return <Navigate to="/login" replace />
+  // Validasi route seller
+  if (path.startsWith('/homeslr') || path.startsWith('/profileslr')) {
+    if (!id || role !== 'seller') {
+      return <Navigate to="/loginslr" />
+    }
+  }
+
+  // Validasi route mahasiswa
+  if ((path.startsWith('/home') || path.startsWith('/profile')) && !path.includes('slr')) {
+    if (!nim || role !== 'mahasiswa') {
+      return <Navigate to="/login" />
+    }
   }
 
   return children

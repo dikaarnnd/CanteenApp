@@ -3,9 +3,6 @@ import { useNavigate } from 'react-router-dom'
 export default function Home() {
   const navigate = useNavigate()
 
-  const nim = localStorage.getItem('nim')
-  if (!nim) navigate('/login')
-
   const handleLogout = () => {
     // Hapus session/login state jika kamu menyimpannya
     localStorage.removeItem('nim')

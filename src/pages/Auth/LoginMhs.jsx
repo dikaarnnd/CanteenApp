@@ -32,6 +32,7 @@ export default function LoginMhs() {
     if (match) {
       // alert('Login berhasil!')
       localStorage.setItem('nim', data.nim) // simpan info login
+      localStorage.setItem('role', 'mahasiswa')
       navigate('/home')
     } else {
       alert('Password salah!')
