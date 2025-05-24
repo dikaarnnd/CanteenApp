@@ -7,14 +7,14 @@ import { Link } from 'react-router-dom'
 import imgLogin from '../../assets/LoginReg.png'
 import logo from '../../assets/logo.png'
 
-export default function LoginPage() {
+export default function LoginMhs() {
   const [nim, setNim] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
   const handleLogin = async () => {
     const { data, error } = await supabase
-      .from('mahasiswa')
+      .from('mhs')
       .select('*')
       .eq('nim', nim)
       .single()
@@ -51,7 +51,7 @@ export default function LoginPage() {
           <div className='flex justify-center m-3'>
             <img src={logo} className=' max-w-25'/>
           </div>
-          <label htmlFor="nim" className='text-sm'>NIM <span className='text-red-700 font-bold'>*</span></label>
+          <label htmlFor="nim" className='text-sm'>NIM<span className='text-red-700 font-bold'>*</span></label>
           <input
             id='nim'
             className="border p-2 w-full mb-2"
@@ -59,7 +59,7 @@ export default function LoginPage() {
             value={nim}
             onChange={(e) => setNim(e.target.value)}
           />
-          <label htmlFor="password" className='text-sm'>Password <span className='text-red-700 font-bold'>*</span></label>
+          <label htmlFor="password" className='text-sm'>Kata Sandi<span className='text-red-700 font-bold'>*</span></label>
           <input
             id='password'
             className="border p-2 w-full"
@@ -68,7 +68,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <a href="/register" className="text-sm text-blue-500 hover:underline ml-auto mb-16.5">
+          <a href="" className="text-sm text-blue-500 hover:underline ml-auto mb-16.5">
               Lupa kata sandi?
           </a>
           <button

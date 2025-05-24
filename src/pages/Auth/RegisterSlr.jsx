@@ -6,40 +6,41 @@ import bcrypt from 'bcryptjs'
 import imgLogin from '../../assets/LoginReg.png'
 import logo from '../../assets/logo.png'
 
-export default function Register() {
-  const [nim, setNim] = useState('')
+export default function RegisterSlr() {
+  const [id, setId] = useState('')
   const [nama, setNama] = useState('')
+  const [namaKantin, setNamaKantin] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
   const handleRegister = async () => {
-    if (!nim || !nama || !password) return alert('Semua field wajib diisi')
+    if (!id || !nama || !namaKantin || !password) return alert('Semua field wajib diisi')
 
     const { data: existingUser, error } = await supabase
-      .from('mahasiswa')
+      .from('seller')
       .select('*')
-      .eq('nim', nim)
-      .eq('nama_mahasiswa', nama)
+      .eq('id', id)
+      .eq('nama', nama)
       .single()
 
     if (error || !existingUser) {
-      return alert('Nama atau NIM tidak sesuai.')
+      return alert('Nama atau ID tidak sesuai.')
     }
 
     // 🔐 Hash dan simpan password
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const { error: updateError } = await supabase
-      .from('mahasiswa')
-      .update({ password: hashedPassword })
-      .eq('nim', nim)
+      .from('seller')
+      .update({ nama_kantin: namaKantin, password: hashedPassword })
+      .eq('id', id)
 
     if (updateError) {
-      return alert('Gagal menyimpan password.')
+      return alert('Gagal menyimpan kata sandi.')
     }
 
-    alert('Password berhasil disimpan! Silakan login.')
-    navigate('/login')
+    alert('Kata sandi berhasil disimpan! Silakan login.')
+    navigate('/loginslr')
   }
 
   return (
@@ -52,23 +53,31 @@ export default function Register() {
           <div className='flex justify-center m-3'>
             <img src={logo} className=' max-w-25'/>
           </div>
-          <label htmlFor="nim" className='text-sm'>NIM <span className='text-red-700 font-bold'>*</span></label>
+          <label htmlFor="id" className='text-sm'>ID Kantin<span className='text-red-700 font-bold'>*</span></label>
           <input
-            id='nim'
+            id='id'
             className="border p-2 w-full mb-2"
             placeholder=""
-            value={nim}
-            onChange={(e) => setNim(e.target.value)}
+            value={id}
+            onChange={(e) => setId(e.target.value)}
           />
-          <label htmlFor="name" className='text-sm'>Nama <span className='text-red-700 font-bold'>*</span></label>
+          <label htmlFor="nama" className='text-sm'>Nama Lengkap<span className='text-red-700 font-bold'>*</span></label>
           <input
-            id='name'
+            id='nama'
             className="border p-2 w-full mb-2"
             placeholder=""
             value={nama}
             onChange={(e) => setNama(e.target.value)}
           />
-          <label htmlFor="password" className='text-sm'>Password baru <span className='text-red-700 font-bold'>*</span></label>
+          <label htmlFor="namakantin" className='text-sm'>Nama Kantin<span className='text-red-700 font-bold'>*</span></label>
+          <input
+            id='namakantin'
+            className="border p-2 w-full mb-2"
+            placeholder=""
+            value={namaKantin}
+            onChange={(e) => setNamaKantin(e.target.value)}
+          />
+          <label htmlFor="password" className='text-sm'>Kata Sandi baru<span className='text-red-700 font-bold'>*</span></label>
           <input
             id='password'
             className="border p-2 w-full mb-4"
@@ -84,7 +93,7 @@ export default function Register() {
             Daftar
           </button>
           <div className='text-center'>
-            <p className='text-sm'>Sudah memiliki akun? <a href="/login" className="font-bold text-sm text-[#3A4D39] hover:underline">
+            <p className='text-sm'>Sudah memiliki akun? <a href="/loginslr" className="font-bold text-sm text-[#3A4D39] hover:underline">
               Masuk
             </a></p>
           </div>

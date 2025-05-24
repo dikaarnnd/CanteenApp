@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom'
 
-export default function Home() {
+export default function HomeSlr() {
   const navigate = useNavigate()
 
-  const nim = localStorage.getItem('nim')
-  if (!nim) navigate('/login')
+  const id = localStorage.getItem('id')
+  if (!id) navigate('/loginslr')
 
   const handleLogout = () => {
     // Hapus session/login state jika kamu menyimpannya
-    localStorage.removeItem('nim')
+    localStorage.removeItem('id')
     // Redirect ke halaman login
-    navigate('/login')
+    navigate('/loginslr')
   }
   return (
     <div className="p-4 text-center">
@@ -20,7 +20,7 @@ export default function Home() {
         onClick={handleLogout}> Logout</button>
         </nav>
       </div>
-      <h1 className="text-2xl font-bold">Selamat Datang di Home</h1>
+      <h1 className="text-2xl font-bold">Selamat Datang di Home Seller</h1>
       {/* <p className="mt-2">Kamu berhasil login atau register 🎉</p> */}
     </div>
   )
