@@ -10,8 +10,8 @@
   @apply min-h-screen flex flex-col items-center justify-center bg-cover bg-center bg-[url('/src/assets/doodlefood.jpeg')];
 }
 .containerAuth {
-  @apply max-w-[600px] min-h-[400px] mx-auto bg-[url('/src/assets/LoginReg.png')] bg-right bg-cover shadow-md;
+  @apply max-w-[700px] min-h-[500px] gap-4 mx-auto bg-gray-500 bg-[url('/src/assets/LoginReg.png')] bg-right bg-cover shadow-md rounded-2xl;
 }
 .container2Auth {
-  @apply bg-[#FDFDED] w-full min-h-[400px] p-3;
+  @apply bg-[#FDFDED] w-full min-h-[400px] p-3 rounded-r-2xl;
 }

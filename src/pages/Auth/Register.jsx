@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../supabaseClient'
 import bcrypt from 'bcryptjs'
 
+import imgLogin from '../../assets/LoginReg.png'
+import logo from '../../assets/logo.png'
+
 export default function Register() {
   const [nim, setNim] = useState('')
   const [nama, setNama] = useState('')
@@ -40,33 +43,53 @@ export default function Register() {
   }
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <h2 className="text-xl font-bold mb-4">Register</h2>
-      <input
-        className="border p-2 w-full mb-2"
-        placeholder="NIM"
-        value={nim}
-        onChange={(e) => setNim(e.target.value)}
-      />
-      <input
-        className="border p-2 w-full mb-2"
-        placeholder="Nama"
-        value={nama}
-        onChange={(e) => setNama(e.target.value)}
-      />
-      <input
-        className="border p-2 w-full mb-4"
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-        onClick={handleRegister}
-      >
-        Register
-      </button>
+    <div className="bgAuth text-black">
+      <div className='flex containerAuth'>
+        <div className="basis-5/6 items-center justify-center p-4">
+          <img src={imgLogin} className="opacity-0 max-w-full h-auto" />
+        </div>
+        <div className='basis 1/6 flex flex-col container2Auth'>
+          <div className='flex justify-center m-3'>
+            <img src={logo} className=' max-w-25'/>
+          </div>
+          <label htmlFor="nim" className='text-sm'>NIM <span className='text-red-700 font-bold'>*</span></label>
+          <input
+            id='nim'
+            className="border p-2 w-full mb-2"
+            placeholder=""
+            value={nim}
+            onChange={(e) => setNim(e.target.value)}
+          />
+          <label htmlFor="name" className='text-sm'>Nama <span className='text-red-700 font-bold'>*</span></label>
+          <input
+            id='name'
+            className="border p-2 w-full mb-2"
+            placeholder=""
+            value={nama}
+            onChange={(e) => setNama(e.target.value)}
+          />
+          <label htmlFor="password" className='text-sm'>Password baru <span className='text-red-700 font-bold'>*</span></label>
+          <input
+            id='password'
+            className="border p-2 w-full mb-4"
+            type="password"
+            placeholder=""
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            className="btn bg-[#3A4D39] text-white font-bold px-4 py-2 rounded cursor-pointer"
+            onClick={handleRegister}
+          >
+            Daftar
+          </button>
+          <div className='text-center'>
+            <p className='text-sm'>Sudah memiliki akun? <a href="/login" className="font-bold text-sm text-[#3A4D39] hover:underline">
+              Masuk
+            </a></p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
