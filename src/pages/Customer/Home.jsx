@@ -18,7 +18,7 @@ export default function Home() {
         </nav>
       </div>
       <h1 className="text-2xl font-bold">Selamat Datang di Home</h1>
-      <p className="mt-2">Kamu berhasil login atau register 🎉</p>
+      {/* <p className="mt-2">Kamu berhasil login atau register 🎉</p> */}
     </div>
   )
 }

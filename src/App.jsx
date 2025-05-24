@@ -23,9 +23,6 @@ function App() {
       {/* <nav>
         <Link to="/">Read</Link> | <Link to="/create">Create</Link> | <Link to="/update">Update</Link> | <Link to="/delete">Delete</Link> | <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
       </nav> */}
-      <nav>
-        <Link to="/">Read</Link> | <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
-      </nav>
       <Routes>
         <Route path="/" element={<ReadPage />} />
         <Route path="/register" element={<Register />} />
