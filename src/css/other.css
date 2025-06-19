@@ -5,6 +5,12 @@
     @apply bg-gray-100 w-full min-h-screen bg-cover bg-[url('/src/assets/doodlefood.jpeg')];
   } */
 
+.hide-scrollbar {
+  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+}
+
+
 /* Auth Page */
 .bgAuth {
   @apply min-h-screen flex flex-col items-center justify-center bg-cover bg-center bg-[url('/src/assets/doodlefood.jpeg')];
