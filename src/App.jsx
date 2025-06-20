@@ -12,6 +12,7 @@ import LoginMhs from './pages/Auth/LoginMhs'
 // pages mhs
 import HomeMhs from './pages/Customer/Home'
 import ProfileMhs from './pages/Customer/Profile'
+import Order from './pages/Customer/Order';
 
 // Auth page seller
 import RegisterSlr from './pages/Auth/RegisterSlr'
@@ -53,6 +54,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/order" element={<Order />} />
 
         {/* Route Seller */}
         <Route path="/registerslr" element={<RegisterSlr />} />
