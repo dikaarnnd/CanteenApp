@@ -1,7 +1,26 @@
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { supabase } from '../../supabaseClient';
 
 export default function Home() {
   const navigate = useNavigate();
+  const [sellers, setSellers] = useState([]);
+
+  useEffect(() => {
+    const fetchSellers = async () => {
+      const { data, error } = await supabase
+        .from('seller') // Replace 'seller' with your actual table name
+        .select('id, nama, nama_kantin');
+
+      if (error) {
+        console.error('Error fetching sellers:', error);
+      } else {
+        setSellers(data);
+      }
+    };
+
+    fetchSellers();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('nim'); // Clear session
@@ -47,30 +66,18 @@ export default function Home() {
 
       {/* Cards Section */}
       <div className="grid grid-cols-2 gap-6 px-6 text-black">
-        <div
-          className="bg-[#F9F4DA] p-6 rounded shadow-md h-32 w-40 flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => handleCardClick(1)}
-        >
-          Card 1
-        </div>
-        <div
-          className="bg-[#F9F4DA] p-6 rounded shadow-md h-32 w-40 flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => handleCardClick(2)}
-        >
-          Card 2
-        </div>
-        <div
-          className="bg-[#F9F4DA] p-6 rounded shadow-md h-32 w-40 flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => handleCardClick(3)}
-        >
-          Card 3
-        </div>
-        <div
-          className="bg-[#F9F4DA] p-6 rounded shadow-md h-32 w-40 flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => handleCardClick(4)}
-        >
-          Card 4
-        </div>
+        {sellers.map((seller) => (
+          <div
+            key={seller.id}
+            className="bg-[#F9F4DA] p-6 rounded shadow-md h-32 w-40 flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow"
+            onClick={() => handleCardClick(seller.id)}
+          >
+            <div>
+              <h2 className="text-lg font-bold">{seller.nama_kantin}</h2>
+              <p className="text-sm">{seller.nama}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
