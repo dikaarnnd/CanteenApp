@@ -16,6 +16,7 @@ import ProfileMhs from './pages/Customer/Profile'
 // Auth page seller
 import RegisterSlr from './pages/Auth/RegisterSlr'
 import LoginSlr from './pages/Auth/LoginSlr'
+import RestoPage from './pages/Customer/RestoPage';
 // pages seller
 import HomeSlr from './pages/Seller/HomeSlr'
 import ProfileSlr from './pages/Seller/ProfileSlr'
@@ -68,6 +69,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/resto/:id" element={<RestoPage />} />
       </Routes>
     </>
   )
