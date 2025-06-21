@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 
 import TopBar from '@/components/TopBar'
+import HighRating from '@/components/HighRating'
 
 export default function HomeSlr() {
   return (
@@ -21,8 +23,10 @@ export default function HomeSlr() {
               {/* Chart */}
               <div className='border-2 border-black row-span-2 rounded-xl shadow-md'></div>
             </div>
-            {/* Menu Favorit */}
-            <div className='border-2 border-black col-span-3 rounded-xl shadow-md'></div>
+            {/* Ratingg Tertinggi */}
+            <div className='border-2 border-black col-span-3 rounded-xl shadow-md'>
+              <HighRating />
+            </div>
           </div>
           {/* Grafik */}
           <div className='border-2 border-black rounded-xl shadow-md'></div>
