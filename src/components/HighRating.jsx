@@ -68,7 +68,7 @@ export default function HighRating() {
   }, [])
 
   return (
-    <div className="p-6 text-black">
+    <div className="px-6 text-black">
       {loading ? (
         <p className='text-center'>Loading...</p>
       ) : data.length === 0 ? (
@@ -80,7 +80,7 @@ export default function HighRating() {
               key={item.id}
               className="flex justify-between items-center gap-2"
             >
-              {/* <p>
+              <p>
                 {index + 1}. {item.name}
               </p>
               <div className='flex flex-row gap-2'>
@@ -93,9 +93,9 @@ export default function HighRating() {
                 <p>
                   ({item.totalVotes})
                 </p>
-              </div> */}
+              </div>
 
-              <img
+              {/* <img
                 src={item.image_url}
                 alt={item.name}
                 className="w-16 h-16 object-cover rounded"
@@ -107,7 +107,7 @@ export default function HighRating() {
                 <p className="text-sm text-gray-700">
                   Rata-rata Rating: {item.avgRating} ({item.totalVotes} penilaian)
                 </p>
-              </div>
+              </div> */}
             </li>
           ))}
         </ul>

@@ -27,9 +27,11 @@ export default function HomeSlr() {
             </div>
 
             {/* Rating Tertinggi */}
-            <section className='min-h-74 max-h-74 border-2 border-black col-span-3 rounded-xl shadow-md flex-grow overflow-y-auto'>
-              <h2 className="text-xl text-center font-bold my-3 text-black">Rating Tertinggi</h2>
+            <section className='min-h-74 grid grid-rows-5 border-2 border-black col-span-3 rounded-xl shadow-md'>
               <div>
+                <h2 className="text-xl text-center font-bold my-3 text-black">Rating Tertinggi</h2>
+              </div>
+              <div className='row-span-4 flex-grow overflow-y-auto'>
                 <HighRating />
               </div>
             </section>

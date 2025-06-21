@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '../supabaseClient' // sesuaikan dengan path kamu
 
-export default function Pendapatan({ sellerId }) {
+export default function Pendapatan() {
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
 
@@ -18,19 +18,10 @@ export default function Pendapatan({ sellerId }) {
       }
 
       const { data, error } = await supabase
-        .from('invoice')
-        .select(`
-          price,
-          quantity,
-          created_at,
-          product:product_id (
-            seller_id
-          ),
-          progress:progress (
-            order_status
-          )
-        `)
-        .eq('progress.order_status', 'queue')
+        .from('invoice_with_seller')
+        .select('price, quantity, created_at')
+        .eq('seller_id', sellerId)
+        .eq('order_status', 'paid')
 
       if (error) {
         console.error('Gagal mengambil data invoice:', error)
@@ -41,12 +32,7 @@ export default function Pendapatan({ sellerId }) {
       // Filter berdasarkan seller & tanggal hari ini
       const today = new Date().toISOString().slice(0, 10)
       const pendapatanHariIni = data
-        .filter((item) => {
-          return (
-            item.product?.seller_id === sellerId &&
-            item.created_at?.startsWith(today)
-          )
-        })
+        .filter((item) => item.created_at?.startsWith(today))
         .reduce((acc, item) => acc + item.price * item.quantity, 0)
 
       setTotal(pendapatanHariIni)
@@ -54,7 +40,7 @@ export default function Pendapatan({ sellerId }) {
     }
 
     fetchTotalPendapatan()
-  }, [sellerId])
+  }, [])
 
   return (
     <section className='flex justify-center items-center'>
