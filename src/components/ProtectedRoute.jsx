@@ -2,7 +2,7 @@ import { Navigate, useLocation } from 'react-router-dom'
 
 export default function ProtectedRoute({ children }) {
   const nim = localStorage.getItem('nim')
-  const id = localStorage.getItem('id')
+  const id = localStorage.getItem('seller_id')
   const role = localStorage.getItem('role')
   const location = useLocation()
   const path = location.pathname

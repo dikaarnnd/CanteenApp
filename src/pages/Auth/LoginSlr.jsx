@@ -31,7 +31,7 @@ export default function LoginSlr() {
 
     if (match) {
       // alert('Login berhasil!')
-      localStorage.setItem('id', data.id) // simpan info login
+      localStorage.setItem('seller_id', data.id) // simpan info login
       localStorage.setItem('role', 'seller')
       navigate('/homeslr')
     } else {
