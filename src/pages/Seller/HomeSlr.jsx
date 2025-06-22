@@ -5,6 +5,7 @@ import TopBar from '@/components/TopBar'
 import Pendapatan from '@/components/Pendapatan'
 import HighRating from '@/components/HighRating'
 import PieChart from '../../components/PieChart'
+import LineChart from '../../components/LineChart'
 
 export default function HomeSlr() {
   const sellerId = localStorage.getItem('seller_id')
@@ -47,7 +48,9 @@ export default function HomeSlr() {
           </div>
 
           {/* Grafik */}
-          <div className='border-2 border-black rounded-xl shadow-md'></div>
+          <div className='min-h-75 border-2 border-black rounded-xl shadow-md'>
+            <LineChart sellerId={sellerId} />
+          </div>
         </div>
 
         {/* Orderan */}
