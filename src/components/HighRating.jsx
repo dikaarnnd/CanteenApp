@@ -1,8 +1,7 @@
 // components/HighRating.jsx
 import React, { useEffect, useState } from 'react'
-import { supabase } from '../supabaseClient' // sesuaikan dengan path client supabase kamu
-
-import Star from '../assets/star.png' // pastikan path ini sesuai dengan struktur proyek kamu
+import { supabase } from '../supabaseClient'
+import Star from '../assets/star.png'
 
 export default function HighRating({ sellerId }) {
   const [data, setData] = useState([])
@@ -63,7 +62,7 @@ export default function HighRating({ sellerId }) {
   }, [])
 
   return (
-    <div className="px-6 text-black">
+    <div className="px-6 text-black font-semibold ">
       {loading ? (
         <p className='text-center'>Loading...</p>
       ) : data.length === 0 ? (
@@ -78,8 +77,8 @@ export default function HighRating({ sellerId }) {
               <p>
                 {index + 1}. {item.name}
               </p>
-              <div className='flex flex-row gap-2'>
-                <div className='flex flex-row'>
+              <div className='flex flex-row justify-center items-center gap-2'>
+                <div className='flex flex-row justify-center items-center'>
                   <img src={Star} className='w-[20px] h-[20px]' />
                   <p>
                     {item.avgRating}

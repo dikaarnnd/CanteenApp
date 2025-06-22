@@ -137,7 +137,7 @@ export default function PieChart({ sellerId }) {
         <p className='text-center'>Memuat grafik...</p>
       ) : (
         <>
-          <div className='w-full flex justify-center items-center h-48'>
+          <div className='w-full flex justify-center items-center h-42'>
             <Pie data={pieData} options={options} />
             {/* <Pie data={chartData} options={options} /> */}
           </div>

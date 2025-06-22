@@ -8,6 +8,7 @@ import {
   PointElement,
   Title,
   Tooltip,
+  Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { supabase } from '../supabaseClient'; // Sesuaikan path
@@ -20,6 +21,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
+  Filler,
 );
 
 export default function LineChart({ sellerId }) {
@@ -97,7 +99,7 @@ export default function LineChart({ sellerId }) {
         pointBorderWidth: 3,
         pointRadius: 6,
         tension: 0.4, // garis halus
-        fill: true,
+        fill: false,
       },
     ],
   };
