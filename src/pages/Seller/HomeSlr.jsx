@@ -21,7 +21,7 @@ export default function HomeSlr() {
       <TopBar />
 
       {/* Main Dashboard */}
-      <div className='flex-grow grid grid-cols-2 gap-2 p-4 h-screen'>
+      <div className='flex-grow grid grid-cols-2 gap-2 p-4 h-screen overflow-hidden'>
         <div className='grid grid-rows-2 gap-2'>
           <div className='grid grid-cols-5 gap-2'>
             <div className='col-span-2 grid grid-rows-3 gap-2'>

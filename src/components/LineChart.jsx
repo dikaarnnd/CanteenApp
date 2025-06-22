@@ -63,8 +63,8 @@ export default function LineChart({ sellerId }) {
       };
 
       data.forEach((item) => {
-        const date = new Date(item.created_at);
-        const day = date.toLocaleDateString('en-US', { weekday: 'short' });
+        const date = new Date().toISOString(item.created_at);
+        const day = date.toLocaleDateString('id-ID', { weekday: 'short' });
         const key = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].includes(day) ? day : 'Sun';
         weeklyTotals[key] += item.price * item.quantity;
       });
