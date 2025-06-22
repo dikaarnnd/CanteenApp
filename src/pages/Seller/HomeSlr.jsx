@@ -4,8 +4,15 @@ import { useState, useEffect } from 'react'
 import TopBar from '@/components/TopBar'
 import Pendapatan from '@/components/Pendapatan'
 import HighRating from '@/components/HighRating'
+import PieChart from '../../components/PieChart'
 
 export default function HomeSlr() {
+  const sellerId = localStorage.getItem('seller_id')
+    if (!sellerId) {
+      console.warn('seller_id tidak ditemukan')
+      setLoading(false)
+      return
+    }
   return (
     <div className='flex flex-col bg-[#FFFDED]'>
       {/* Top Bar */}
@@ -18,21 +25,23 @@ export default function HomeSlr() {
             <div className='col-span-2 grid grid-rows-3 gap-2'>
               {/* Total Pendapatan */}
               <section className='min-h-23 flex flex-col bg-[#3A4D39] justify-center items-center rounded-xl shadow-md'>
-                <h2 className='text-center font-bold text-lg'>Pendapatan Anda hari ini:</h2>
-                <Pendapatan />
+                <h2 className='text-center text-[#FFFDED] font-bold text-lg'>Pendapatan Anda hari ini:</h2>
+                <Pendapatan sellerId={sellerId} />
               </section>
 
               {/* Pie Chart */}
-              <div className='min-h-47 border-2 border-black row-span-2 rounded-xl shadow-md'></div>
+              <section className='flex justify-center items-center min-h-47 border-2 border-black row-span-2 rounded-xl shadow-md'>
+                <PieChart sellerId={sellerId} />
+              </section>
             </div>
 
             {/* Rating Tertinggi */}
             <section className='min-h-74 grid grid-rows-5 border-2 border-black col-span-3 rounded-xl shadow-md'>
               <div>
-                <h2 className="text-xl text-center font-bold my-3 text-black">Rating Tertinggi</h2>
+                <h2 className="text-xl text-center font-bold my-3 text-[#3A4D39]">Rating Tertinggi</h2>
               </div>
               <div className='row-span-4 flex-grow overflow-y-auto'>
-                <HighRating />
+                <HighRating sellerId={sellerId} />
               </div>
             </section>
           </div>

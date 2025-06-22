@@ -4,7 +4,7 @@ import { supabase } from '../supabaseClient' // sesuaikan dengan path client sup
 
 import Star from '../assets/star.png' // pastikan path ini sesuai dengan struktur proyek kamu
 
-export default function HighRating() {
+export default function HighRating({ sellerId }) {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -13,23 +13,18 @@ export default function HighRating() {
       setLoading(true)
 
       const { data, error } = await supabase
-        .from('invoice')
+        .from('invoice_with_seller')
         .select(`
           product_id,
           rating,
-          product:product_id (
-            name,
-            image_url
-          ),
-          progress:progress (
-            order_status
-          )
+          product_name
         `)
-        .eq('progress.order_status', 'paid')
+        .eq('seller_id', sellerId)
+        .eq('order_status', 'paid')
         .not('rating', 'is', null)
 
       if (error) {
-        console.error('Error fetching invoice data:', error)
+        console.error('Gagal mengambil data invoice_with_seller:', error)
         setLoading(false)
         return
       }
@@ -40,7 +35,7 @@ export default function HighRating() {
         const id = item.product_id
         if (!grouped[id]) {
           grouped[id] = {
-            name: item.product.name,
+            name: item.product_name,
             totalRating: 0,
             count: 0
           }
