@@ -84,7 +84,7 @@ export default function RestoPage() {
           className="bg-[#9BA38D] text-white px-4 py-2 rounded hover:bg-[#7F8C69] transition-colors"
           onClick={() => navigate('/home')}
         >
-          ← Back to Home
+          ← Kembali ke Home
         </button>
         <button
           className="bg-[#9BA38D] text-white px-4 py-2 rounded hover:bg-[#7F8C69] transition-colors"
@@ -109,14 +109,14 @@ export default function RestoPage() {
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl font-bold text-white mb-2">{resto.nama_kantin}</h1>
-            <p className="text-lg text-gray-200">Owned by: <span className="font-semibold text-white">{resto.nama}</span></p>
+            <p className="text-lg text-gray-200">Seller: <span className="font-semibold text-white">{resto.nama}</span></p>
           </div>
         </div>
       </div>
 
       {/* Products Section */}
       <div className="max-w-6xl mx-auto p-6">
-        <h2 className="text-2xl font-bold text-black mb-6 text-center">Our Menu</h2>
+        <h2 className="text-2xl font-bold text-black mb-6 text-center">Menu Kami</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => (
             <div
