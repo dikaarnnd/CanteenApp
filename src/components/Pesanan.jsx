@@ -18,20 +18,20 @@ export default function Pesanan({ sellerId }) {
         invoice (
           mhs_nim,
           quantity,
-          product (
+          product:product_id (
             name,
             seller_id
           )
         )
       `)
       .eq('order_status', 'queue')
-      .eq('invoice.product.seller_id', sellerId)
       .limit(5)
 
     if (error) {
       console.error('Error fetching data:', error)
     } else {
-      setQueueOrders(data)
+      const filtered = data.filter(order => order.invoice?.product?.seller_id === sellerId)
+      setQueueOrders(filtered)
     }
   }
   
@@ -44,20 +44,20 @@ export default function Pesanan({ sellerId }) {
         invoice (
           mhs_nim,
           quantity,
-          product (
+          product:product_id (
             name,
             seller_id
           )
         )
       `)
       .eq('order_status', 'process')
-      .eq('invoice.product.seller_id', sellerId)
       .limit(5)
 
     if (error) {
       console.error('Error fetching data:', error)
     } else {
-      setProcessOrders(data)
+      const filtered = data.filter(order => order.invoice?.product?.seller_id === sellerId)
+      setQueueOrders(filtered)
     }
   }
 
@@ -94,7 +94,7 @@ export default function Pesanan({ sellerId }) {
                   <div>
                     <strong>{order.invoice.mhs_nim}</strong>
                   </div>
-                  <div>{order.invoice.product.name}</div>
+                  <div>{order.invoice?.product?.name || 'Produk tidak ditemukan'}</div>
                   <div className='flex items-center gap-2'>
                     <div className="mr-3">({order.invoice.quantity} pcs)</div>
                     <button onClick={() => handleAction(order.invoice_id, 'process')}
@@ -127,7 +127,7 @@ export default function Pesanan({ sellerId }) {
                   <div>
                     <strong>{order.invoice.mhs_nim}</strong>
                   </div>
-                  <div>{order.invoice.product.name}</div>
+                  <div>{order.invoice?.product?.name || 'Produk tidak ditemukan'}</div>
                   <div className='flex items-center gap-2'>
                     <div className="mr-3">({order.invoice.quantity} pcs)</div>
                     <button onClick={() => handleAction(order.invoice_id, 'ready')}
