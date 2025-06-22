@@ -77,58 +77,92 @@ export default function RestoPage() {
   }
 
   return (
-    <div className="p-4 text-center bg-[#FFFDED] min-h-screen">
-      <button
-        className="bg-[#9BA38D] text-white px-4 py-2 rounded hover:bg-[#7F8C69] mb-4"
-        onClick={() => navigate('/home')}
-      >
-        Back to Home
-      </button>
-      <div className="bg-[#F9F4DA] p-6 rounded shadow-md max-w-md mx-auto mb-8">
-        <h1 className="text-3xl font-bold mb-4 text-black">{resto.nama_kantin}</h1>
-        <p className="text-lg text-black">Owned by: <span className="font-semibold">{resto.nama}</span></p>
-      </div>
+    <div className="bg-[#FFFDED] min-h-screen">
+      {/* Navigation Bar */}
+      <div className="flex justify-between items-center p-4 bg-[#F9F4DA] shadow-sm">
         <button
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-4"
-        onClick={() => navigate('/order')}
+          className="bg-[#9BA38D] text-white px-4 py-2 rounded hover:bg-[#7F8C69] transition-colors"
+          onClick={() => navigate('/home')}
         >
-        View Basket
+          ← Back to Home
         </button>
+        <button
+          className="bg-[#9BA38D] text-white px-4 py-2 rounded hover:bg-[#7F8C69] transition-colors"
+          onClick={() => navigate('/order')}
+        >
+          🛒 View Basket
+        </button>
+      </div>
+
+      {/* Restaurant Header with Image */}
+      <div className="relative">
+        {/* Restaurant Image */}
+        <div className="w-full h-64 bg-gray-300 overflow-hidden">
+          <img
+            src="https://via.placeholder.com/800x300/9BA38D/FFFFFF?text=Restaurant+Image"
+            alt={resto.nama_kantin}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        
+        {/* Restaurant Info Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-4xl font-bold text-white mb-2">{resto.nama_kantin}</h1>
+            <p className="text-lg text-gray-200">Owned by: <span className="font-semibold text-white">{resto.nama}</span></p>
+          </div>
+        </div>
+      </div>
 
       {/* Products Section */}
-      <div className="grid grid-cols-2 gap-6 px-6 text-black">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-[#F9F4DA] p-4 rounded shadow-md flex h-48 w-full cursor-pointer hover:shadow-lg transition-shadow"
-          >
-            {/* Left Grid: Image */}
-            <div className="w-1/2 h-full">
-              <div className="w-full h-full bg-gray-200 rounded overflow-hidden">
+      <div className="max-w-6xl mx-auto p-6">
+        <h2 className="text-2xl font-bold text-black mb-6 text-center">Our Menu</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.map((product) => (
+            <div
+              key={product.id}
+              className="bg-[#F9F4DA] rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
+            >
+              {/* Product Image */}
+              <div className="w-full h-48 bg-gray-200 overflow-hidden">
                 <img
-                  src={product.image_url || 'https://via.placeholder.com/150'}
+                  src={product.image_url || 'https://via.placeholder.com/300x200/9BA38D/FFFFFF?text=Food+Image'}
                   alt={product.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                 />
               </div>
-            </div>
 
-            {/* Right Grid: Details */}
-            <div className="w-1/2 flex flex-col justify-between pl-4">
-              <h2 className="text-lg font-bold">{product.name}</h2>
-              <p className="text-sm text-left">{product.desk}</p>
-              <p className="text-sm text-left font-semibold">Price: Rp {product.price}</p>
-              <div className="flex items-center justify-between mt-2">
-                <button
-                  className="bg-[#9BA38D] text-white px-2 py-1 rounded hover:bg-[#7F8C69]"
-                  onClick={() => handleAddToBasket(product)}
-                >
-                  Add to Basket
-                </button>
+              {/* Product Details */}
+              <div className="p-4">
+                <h3 className="text-xl font-bold text-black mb-2 line-clamp-1">{product.name}</h3>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2 h-10">{product.desk}</p>
+                
+                {/* Price and Add Button */}
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-500 uppercase tracking-wide">Price</span>
+                    <span className="text-lg font-bold text-[#9BA38D]">Rp {product.price?.toLocaleString('id-ID') || product.price}</span>
+                  </div>
+                  <button
+                    className="bg-[#9BA38D] text-white px-4 py-2 rounded-lg hover:bg-[#7F8C69] transition-colors duration-200 font-medium shadow-sm hover:shadow-md"
+                    onClick={() => handleAddToBasket(product)}
+                  >
+                    + Add to Basket
+                  </button>
+                </div>
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {products.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-gray-400 text-6xl mb-4">🍽️</div>
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">No menu items available</h3>
+            <p className="text-gray-500">This restaurant hasn't added any products yet.</p>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
