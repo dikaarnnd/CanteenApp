@@ -92,9 +92,11 @@ export default function Pesanan({ sellerId }) {
               {queueOrders.map((order, index) => (
                 <li key={index} className='flex justify-between items-center gap-1'>
                   <div>
-                    <strong>{order.invoice.mhs_nim}</strong> - {order.invoice.product.name} ({order.invoice.quantity} pcs)
+                    <strong>{order.invoice.mhs_nim}</strong>
                   </div>
-                  <div className='flex gap-2'>
+                  <div>{order.invoice.product.name}</div>
+                  <div className='flex items-center gap-2'>
+                    <div className="mr-3">({order.invoice.quantity} pcs)</div>
                     <button onClick={() => handleAction(order.invoice_id, 'process')}
                       className="cursor-pointer"
                     >
@@ -123,9 +125,11 @@ export default function Pesanan({ sellerId }) {
               {processOrders.map((order, index) => (
                 <li key={index} className='flex justify-between items-center gap-1'>
                   <div>
-                    <strong>{order.invoice.mhs_nim}</strong> - {order.invoice.product.name} ({order.invoice.quantity} pcs)
+                    <strong>{order.invoice.mhs_nim}</strong>
                   </div>
-                  <div className='flex gap-2'>
+                  <div>{order.invoice.product.name}</div>
+                  <div className='flex items-center gap-2'>
+                    <div className="mr-3">({order.invoice.quantity} pcs)</div>
                     <button onClick={() => handleAction(order.invoice_id, 'ready')}
                       className="cursor-pointer"
                     >
