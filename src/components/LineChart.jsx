@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { DateTime } from 'luxon';
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -32,25 +33,17 @@ export default function LineChart({ sellerId }) {
     const fetchWeeklySales = async () => {
       setLoading(true);
 
-      const today = new Date();
-      const dayOfWeek = today.getDay(); // Minggu = 0
-      const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-
-      const monday = new Date(today);
-      monday.setDate(today.getDate() - daysSinceMonday);
-      monday.setHours(0, 0, 0, 0);
-
-      const sunday = new Date(monday);
-      sunday.setDate(monday.getDate() + 6);
-      sunday.setHours(23, 59, 59, 999);
+      const now = DateTime.now().setZone('Asia/Jakarta')
+      const monday = now.startOf('week') // Senin
+      const sunday = monday.plus({ days: 6 }).endOf('day') // Minggu
 
       const { data, error } = await supabase
         .from('invoice_with_seller')
         .select('created_at, quantity, price')
         .eq('seller_id', sellerId)
         .eq('order_status', 'paid')
-        .gte('created_at', monday.toISOString())
-        .lte('created_at', sunday.toISOString());
+        .gte('created_at', monday.toISO())
+        .lte('created_at', sunday.toISO());
 
       if (error) {
         console.error('Error fetching weekly sales:', error);
@@ -63,20 +56,21 @@ export default function LineChart({ sellerId }) {
       };
 
       data.forEach((item) => {
-        const date = new Date().toISOString(item.created_at);
-        const day = date.toLocaleDateString('id-ID', { weekday: 'short' });
-        const key = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].includes(day) ? day : 'Sun';
-        weeklyTotals[key] += item.price * item.quantity;
-      });
+        const date = DateTime.fromISO(item.created_at, { zone: 'Asia/Jakarta' })
+        const dayKey = date.toFormat('ccc') // "Mon", "Tue", dst
+        if (weeklyTotals[dayKey] !== undefined) {
+          weeklyTotals[dayKey] += item.price * item.quantity
+        }
+      })
 
       const finalData = [
-        { day: 'Mon', total_expense: weeklyTotals.Mon },
-        { day: 'Tue', total_expense: weeklyTotals.Tue },
-        { day: 'Wed', total_expense: weeklyTotals.Wed },
-        { day: 'Thu', total_expense: weeklyTotals.Thu },
-        { day: 'Fri', total_expense: weeklyTotals.Fri },
-        { day: 'Sat', total_expense: weeklyTotals.Sat },
-        { day: 'Sun', total_expense: weeklyTotals.Sun },
+        { day: 'Mon', total_pendapatan: weeklyTotals.Mon },
+        { day: 'Tue', total_pendapatan: weeklyTotals.Tue },
+        { day: 'Wed', total_pendapatan: weeklyTotals.Wed },
+        { day: 'Thu', total_pendapatan: weeklyTotals.Thu },
+        { day: 'Fri', total_pendapatan: weeklyTotals.Fri },
+        { day: 'Sat', total_pendapatan: weeklyTotals.Sat },
+        { day: 'Sun', total_pendapatan: weeklyTotals.Sun },
       ];
 
       setData(finalData);
@@ -91,7 +85,7 @@ export default function LineChart({ sellerId }) {
     datasets: [
       {
         label: 'Penjualan Harian (Rp)',
-        data: data.map((item) => item.total_expense),
+        data: data.map((item) => item.total_pendapatan),
         borderColor: 'rgba(54, 162, 235, 1)',
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         pointBackgroundColor: 'white',
