@@ -6,7 +6,7 @@ import CancelBtn from '../assets/cancel.png'
 import CheckBtn from '../assets/check.png'
 
 const STATUSES = ['queue', 'process', 'ready', 'paid']
-const LIMIT_PER_STATUS = 3
+const LIMIT_PER_STATUS = 100
 
 export default function Pesanan({ sellerId }) {
   const [orders, setOrders] = useState({
@@ -16,7 +16,29 @@ export default function Pesanan({ sellerId }) {
     paid: []
   })
 
+  function getTodayDateRangeInUTC() {
+    const now = new Date()
+
+    // Konversi ke zona waktu Indonesia (WIB = UTC+7)
+    const offsetInMs = 7 * 60 * 60 * 1000
+    const today = new Date(now.getTime() + offsetInMs)
+
+    const startOfDay = new Date(today)
+    startOfDay.setUTCHours(0, 0, 0, 0)
+
+    const endOfDay = new Date(today)
+    endOfDay.setUTCHours(23, 59, 59, 999)
+
+    return {
+      start: startOfDay.toISOString(),
+      end: endOfDay.toISOString()
+    }
+  }
+
+
   const fetchOrdersByStatus = async (status) => {
+    const { start, end } = getTodayDateRangeInUTC()
+    
     const { data, error } = await supabase
       .from('progress')
       .select(`
@@ -25,6 +47,7 @@ export default function Pesanan({ sellerId }) {
         invoice (
           mhs_nim,
           quantity,
+          created_at,
           product:product_id (
             name,
             seller_id
@@ -32,6 +55,8 @@ export default function Pesanan({ sellerId }) {
         )
       `)
       .eq('order_status', status)
+      .gte('invoice.created_at', start)
+      .lt('invoice.created_at', end)
 
     if (error) {
       console.error(`Error fetching ${status} orders:`, error)
@@ -75,9 +100,9 @@ export default function Pesanan({ sellerId }) {
     }
 
     return (
-      <div className='grid rows-5 mb-1'>
+      <div className='flex flex-col mb-1'>
         <div className='text-[#3A4D39]'>{title}</div>
-        <div className='min-h-29 bg-[#3A4D39] row-span-4 rounded-xl p-4'>
+        <div className={`bg-[#3A4D39] rounded-xl p-4 min-h-36 ${orderList.length === 0 ? 'h-fit' : 'max-h-36 overflow-y-auto'}`}>
           {orderList.length === 0 ? (
             <div className='text-sm italic'>{statusEmptyText[status]}</div>
           ) : (

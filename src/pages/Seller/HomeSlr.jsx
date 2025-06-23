@@ -55,9 +55,13 @@ export default function HomeSlr() {
         </div>
 
         {/* Orderan */}
-        <div className='min-h-full border-2 border-black rounded-xl shadow-md'>
-          <h2 className="text-xl text-center font-bold my-3 text-[#3A4D39]">Pesanan</h2>
-          <Pesanan sellerId={sellerId} />
+        <div className='flex flex-col border-2 border-black rounded-xl min-h-full shadow-md'>
+          <div>
+            <h2 className="text-xl text-center font-bold my-3 text-[#3A4D39]">Pesanan</h2>
+          </div>
+          <div>
+            <Pesanan sellerId={sellerId} />
+          </div>
         </div>
       </div>
     </div>
