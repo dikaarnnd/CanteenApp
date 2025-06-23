@@ -4,6 +4,7 @@ import { supabase } from '../supabaseClient'
 
 import CancelBtn from '../assets/cancel.png'
 import CheckBtn from '../assets/check.png'
+import NPaidBtn from '../assets/npaid.png'
 
 const STATUSES = ['queue', 'process', 'ready', 'paid']
 const LIMIT_PER_STATUS = 100
@@ -90,7 +91,7 @@ export default function Pesanan({ sellerId }) {
     }
   }, [sellerId])
 
-  const renderOrderList = (status, title, actionLeft, actionRight) => {
+  const renderOrderList = (status, title, actionLeft, actionRight, extraAction = null) => {
     const orderList = orders[status]
     const statusEmptyText = {
       queue: 'Tidak ada pesanan',
@@ -127,6 +128,15 @@ export default function Pesanan({ sellerId }) {
                     >
                       <img src={CancelBtn} alt="Cancel" className='w-7 h-7' />
                     </button>
+                    {/* Tombol tambahan jika ada */}
+                    {extraAction && (
+                      <button
+                        onClick={() => handleAction(order.invoice_id, extraAction.status)}
+                        className="cursor-pointer"
+                      >
+                        {extraAction.label}
+                      </button>
+                    )}
                   </div>
                 </li>
               ))}
@@ -141,8 +151,10 @@ export default function Pesanan({ sellerId }) {
     <div className='flex-grow grid grid-rows-4 gap-2 px-6'>
       {renderOrderList('queue', 'Menunggu persetujuan', { status: 'process' }, { status: 'cancel' })}
       {renderOrderList('process', 'Sedang diproses', { status: 'ready' }, { status: 'queue' })}
-      {renderOrderList('ready', 'Pesanan Siap', { status: 'paid' }, { status: 'process' })}
-      {/* {renderOrderList('paid', 'Selesai', { status: 'paid' }, { status: 'process' })} */}
+      {renderOrderList('ready', 'Pesanan Siap',
+        { status: 'paid' },
+        { status: 'process' },
+        { status: 'npaid', label: <img src={NPaidBtn} className='w-5 h-5' /> })}
     </div>
   )
 }

@@ -27,7 +27,7 @@ export default function HomeSlr() {
             <div className='col-span-2 grid grid-rows-3 gap-2'>
               {/* Total Pendapatan */}
               <section className='min-h-23 flex flex-col bg-[#3A4D39] justify-center items-center rounded-xl shadow-md'>
-                <h2 className='text-center text-[#FFFDED] font-bold text-lg'>Pendapatan Anda hari ini:</h2>
+                <h2 className='text-center text-[#FFFDED] font-bold text-md'>Pendapatan Anda hari ini:</h2>
                 <Pendapatan sellerId={sellerId} />
               </section>
 
