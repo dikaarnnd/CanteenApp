@@ -64,7 +64,7 @@ export default function HomeSlr() {
             <h2 className="text-xl text-center font-bold my-3 text-[#3A4D39]">Pesanan</h2>
           </div>
           <div className='flex-grow overflow-hidden'>
-            <Pesanan sellerId={sellerId} />
+            <Pesanan sellerId={sellerId} visibleStatuses={['queue','process', 'ready']} />
           </div>
         </div>
       </div>

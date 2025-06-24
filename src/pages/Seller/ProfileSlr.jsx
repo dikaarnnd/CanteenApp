@@ -5,6 +5,7 @@ import TopBar from '@/components/TopBar'
 import PieChart from '@/components/PieChart'
 import LineChart from '@/components/LineChart'
 import PaidCount from '@/components/PaidCount';
+import Pesanan from '@/components/Pesanan'
 import Camera from '@/assets/camera.png' 
 
 export default function ProfileSlr() {
@@ -91,7 +92,7 @@ export default function ProfileSlr() {
       <TopBar />
 
       {/* Main Content */}
-      <main className="flex flex-col-reverse w-full h-full p-4 gap-3 text-black md:flex-row lg:h-screen">
+      <main className="flex flex-col-reverse w-full h-full p-4 gap-3 text-black md:flex-row">
 
         {/* Sidebar Kiri */}
         <div className="flex flex-col items-center w-full h-full lg:w-1/4">
@@ -159,10 +160,10 @@ export default function ProfileSlr() {
         </div>
 
         {/* Konten Kanan */}
-        <div className="flex flex-col h-full w-full p-3 bg-[#fefcea] border rounded-md shadow-md lg:w-3/4">
+        <div className="flex flex-col h-full w-full p-3 gap-4 bg-[#fefcea] border rounded-md shadow-md lg:w-3/4">
           
           {/* Pie Chart, Total Penjualan, dan Line Chart */}
-          <div className='flex flex-col justify-between gap-3 lg:flex-row lg:w-full'>
+          <div className='flex flex-col justify-between mt-3 gap-3 lg:flex-row lg:w-full'>
 
             {/* Pie Chart, Total Penjualan */}
             <div className='flex w-full justify-around items-center lg:w-1/3 lg:flex-col'>
@@ -174,6 +175,11 @@ export default function ProfileSlr() {
             <div className='lg:w-2/3'>
               <LineChart sellerId={sellerId} rangeType="month" />
             </div>
+          </div>
+
+          {/* Data npaid & cancel */}
+          <div className='text-[#FFFDED]'>
+            <Pesanan sellerId={sellerId} visibleStatuses={['npaid','cancel']} />
           </div>
         </div>
       </main>
