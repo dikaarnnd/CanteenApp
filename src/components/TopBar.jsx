@@ -20,6 +20,7 @@ export default function TopBar() {
           <ul className="menu bg-base-200 text-base-content min-h-full w-40 p-4">
             {/* Sidebar content here */}
             <li><Link to="/homeslr">Dashboard</Link></li>
+            <li><Link to="/productview">Product</Link></li>
             <li><Link to="/profileslr">Profile</Link></li>
           </ul>
         </div>

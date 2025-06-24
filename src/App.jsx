@@ -21,6 +21,7 @@ import RestoPage from './pages/Customer/RestoPage';
 // pages seller
 import HomeSlr from './pages/Seller/HomeSlr'
 import ProfileSlr from './pages/Seller/ProfileSlr'
+import ProductView from './pages/Seller/ProductView'
 
 // components
 import ProtectedRoute from './components/ProtectedRoute'
@@ -68,6 +69,12 @@ function App() {
         <Route path="/profileslr" element={
             <ProtectedRoute>
               <ProfileSlr />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/productview" element={
+            <ProtectedRoute>
+              <ProductView />
             </ProtectedRoute>
           }
         />

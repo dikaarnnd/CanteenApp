@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom'
 
 import TopBar from '@/components/TopBar'
 
-import Camera from '@/assets/camera.png' 
-
 export default function ProfileSlr() {
   const navigate = useNavigate()
   
@@ -15,24 +13,19 @@ export default function ProfileSlr() {
       navigate('/loginslr')
     }
   return (
-    <div className=" bg-[#FFFDED]">
+    <div className="flex flex-col min-h-screen bg-white">
       <TopBar />
-      
-      {/* Main Content */}
-      <main className="flex-grow p-4 text-black h-full">
-        <div className="flex flex-col-reverse lg:flex-row lg:h-screen gap-4">
+
+      <main className="flex-grow p-4">
+        <div className="flex flex-col lg:flex-row gap-4 h-full">
           
           {/* Sidebar Kiri */}
-          <div className="w-full lg:w-1/3 flex flex-col items-center">
-            <div className='flex justify-center items-center gap-1 border-dashed border-2 h-1/2 w-full rounded-md mb-3 shadow-md'>
-              <img src={Camera} className='w-5 h-5' />
-              <h2>Tambahkan foto</h2>
-              {/* <img
-                src="https://allofresh.id/blog/wp-content/uploads/2023/09/cara-membuat-mie-goreng-4-1-scaled.jpg"
-                alt="Mie Goreng"
-                className="w-full rounded-md mb-4 object-cover max-h-52"
-              /> */}
-            </div>
+          <div className="w-full lg:w-1/3 bg-[#f5f3e7] rounded-md p-4 flex flex-col items-center">
+            <img
+              src="https://allofresh.id/blog/wp-content/uploads/2023/09/cara-membuat-mie-goreng-4-1-scaled.jpg"
+              alt="Mie Goreng"
+              className="w-full rounded-md mb-4 object-cover max-h-52"
+            />
             <div className="w-full space-y-3">
               <div className="text-left">
                 <label className="block text-sm font-semibold mb-1">
@@ -56,7 +49,7 @@ export default function ProfileSlr() {
                   readOnly
                 />
               </div >
-              <button className="w-full bg-[#5f6f53] text-white font-semibold py-2 rounded hover:bg-[#4d5a44] transition cursor-pointer shadow-md">
+              <button className="w-full bg-[#5f6f53] text-white font-semibold py-2 rounded hover:bg-[#4d5a44] transition">
                 Simpan
               </button>
 
@@ -65,7 +58,7 @@ export default function ProfileSlr() {
             {/* Logout di bawah sidebar */}
             <button
               onClick={handleLogout}
-              className="mt-auto w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition cursor-pointer shadow-md"
+              className="mt-auto w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition mt-6"
             >
               Logout
             </button>
@@ -77,4 +70,5 @@ export default function ProfileSlr() {
       </main>
     </div>
   )
+
 }
