@@ -148,7 +148,7 @@ export default function Pesanan({ sellerId }) {
   }
 
   return (
-    <div className='flex-grow grid grid-rows-4 gap-2 px-6'>
+    <div className='flex flex-col mb-3 gap-2 px-6'>
       {renderOrderList('queue', 'Menunggu persetujuan', { status: 'process' }, { status: 'cancel' })}
       {renderOrderList('process', 'Sedang diproses', { status: 'ready' }, { status: 'queue' })}
       {renderOrderList('ready', 'Pesanan Siap',
