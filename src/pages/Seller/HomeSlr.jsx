@@ -21,13 +21,13 @@ export default function HomeSlr() {
       <TopBar />
 
       {/* Main Dashboard */}
-      <div className='flex-grow grid grid-cols-2 gap-2 p-4 h-screen'>
+      <div className='flex-grow grid grid-cols-2 gap-2 p-4 h-screen overflow-hidden'>
         <div className='grid grid-rows-2 gap-2'>
           <div className='grid grid-cols-5 gap-2'>
             <div className='col-span-2 grid grid-rows-3 gap-2'>
               {/* Total Pendapatan */}
               <section className='min-h-23 flex flex-col bg-[#3A4D39] justify-center items-center rounded-xl shadow-md'>
-                <h2 className='text-center text-[#FFFDED] font-bold text-lg'>Pendapatan Anda hari ini:</h2>
+                <h2 className='text-center text-[#FFFDED] font-bold text-md'>Pendapatan Anda hari ini:</h2>
                 <Pendapatan sellerId={sellerId} />
               </section>
 
@@ -55,9 +55,13 @@ export default function HomeSlr() {
         </div>
 
         {/* Orderan */}
-        <div className='min-h-full border-2 border-black rounded-xl shadow-md'>
-          <h2 className="text-xl text-center font-bold my-3 text-[#3A4D39]">Pesanan</h2>
-          <Pesanan sellerId={sellerId} />
+        <div className='flex flex-col border-2 border-black rounded-xl min-h-full shadow-md'>
+          <div>
+            <h2 className="text-xl text-center font-bold my-3 text-[#3A4D39]">Pesanan</h2>
+          </div>
+          <div>
+            <Pesanan sellerId={sellerId} />
+          </div>
         </div>
       </div>
     </div>

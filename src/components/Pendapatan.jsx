@@ -41,7 +41,7 @@ export default function Pendapatan({ sellerId }) {
       ) : (
         <>
           <p className='text-center font-bold text-2xl text-[#FFFDED]'>
-            Rp. {total.toLocaleString('id-ID')}
+            Rp{total.toLocaleString('id-ID')}
           </p>
         </>
       )}
