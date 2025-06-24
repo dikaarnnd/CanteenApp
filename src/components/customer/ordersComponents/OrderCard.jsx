@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getStatusText, getStatusColor, formatDate } from './orderStatusUtils';
+import { getStatusText, getStatusColor, formatDate } from './OrderStatusUtils';
 
 export default function OrderCard({ order, onConfirmPickup, onMarkAsTaken, onCancelOrder }) {
   const [isLoading, setIsLoading] = useState(false);
