@@ -58,7 +58,7 @@ export default function ProfileSlr() {
             {/* Logout di bawah sidebar */}
             <button
               onClick={handleLogout}
-              className="mt-auto w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition mt-6"
+              className="mt-auto w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition"
             >
               Logout
             </button>

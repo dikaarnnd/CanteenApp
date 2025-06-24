@@ -85,10 +85,10 @@ export default function ProductView() {
       sellerId,
     });
 
-    if (!image || !image.name) {
-      alert("Harap pilih gambar!");
-      return;
-    }
+    // if (!image || !image.name) {
+    //   alert("Harap pilih gambar!");
+    //   return;
+    // }
     if (!sellerId) {
     alert("Seller ID tidak ditemukan. Harap login ulang.");
     return;
