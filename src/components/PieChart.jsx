@@ -6,7 +6,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 
 ChartJS.register(ArcElement, Tooltip, Legend,)
 
-export default function PieChart({ sellerId }) {
+export default function PieChart({ sellerId, filterTodayOnly = false }) {
   const [chartData, setChartData] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -14,27 +14,31 @@ export default function PieChart({ sellerId }) {
     const fetchChartData = async () => {
       setLoading(true)
 
-      // Filter data hanya untuk hari ini
-      const today = new Date().toISOString().slice(0, 10)
-
-      const { data, error } = await supabase
+      let query = supabase
         .from('invoice_with_seller')
         .select('product_id, quantity, product_name, created_at, order_status, seller_id')
         .eq('seller_id', sellerId)
         .eq('order_status', 'paid')
 
+      const { data, error } = await query
+      
       if (error) {
         console.error('Gagal fetch data:', error)
         setLoading(false)
         return
       }
 
-      const filtered = data.filter(item => item.created_at?.startsWith(today))
+      // Filter data untuk hari ini atau seluruh data
+      const filteredData = filterTodayOnly
+        ? data.filter(item =>
+            item.created_at?.startsWith(new Date().toISOString().slice(0, 10))
+          )
+        : data
 
       // Hitung total quantity per produk
       const totals = {}
       let grandTotal = 0
-      filtered.forEach(item => {
+      filteredData.forEach(item => {
         const name = item.product_name || 'Tidak diketahui'
         totals[name] = (totals[name] || 0) + item.quantity
         grandTotal += item.quantity
@@ -73,7 +77,7 @@ export default function PieChart({ sellerId }) {
     }
 
     fetchChartData()
-  }, [sellerId])
+  }, [sellerId, filterTodayOnly])
 
   // Data untuk pie chart
   const pieValues = chartData.map(c => parseFloat(c.percentage))
@@ -134,7 +138,9 @@ export default function PieChart({ sellerId }) {
   return (
     <div>
       {loading ? (
-        <p className='text-center'>Memuat grafik...</p>
+        <p className='text-center text-[#3A4D39]'>Memuat grafik...</p>
+      ) : chartData.length === 0 ? (
+        <p className='text-center text-[#3A4D39] font-semibold'>Belum ada pendapatan</p>
       ) : (
         <>
           <div className='w-full flex justify-center items-center h-42'>

@@ -25,25 +25,37 @@ ChartJS.register(
   Filler,
 );
 
-export default function LineChart({ sellerId }) {
+export default function LineChart({ sellerId, rangeType = 'week' }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchWeeklySales = async () => {
+    const fetchSales = async () => {
       setLoading(true);
 
       const now = DateTime.now().setZone('Asia/Jakarta')
-      const monday = now.startOf('week') // Senin
-      const sunday = monday.plus({ days: 6 }).endOf('day') // Minggu
+      // const monday = now.startOf('week') // Senin
+      // const sunday = monday.plus({ days: 6 }).endOf('day') // Minggu
+      let startDate, endDate;
+
+      if (rangeType === 'week') {
+        startDate = now.startOf('week');
+        endDate = now.endOf('week');
+      } else if (rangeType === 'month') {
+        startDate = now.startOf('month');
+        endDate = now.endOf('month');
+      } else if (rangeType === 'year') {
+        startDate = now.startOf('year');
+        endDate = now.endOf('year');
+      }
 
       const { data, error } = await supabase
         .from('invoice_with_seller')
         .select('created_at, quantity, price')
         .eq('seller_id', sellerId)
         .eq('order_status', 'paid')
-        .gte('created_at', monday.toISO())
-        .lte('created_at', sunday.toISO());
+        .gte('created_at', startDate.toISO())
+        .lte('created_at', endDate.toISO());
 
       if (error) {
         console.error('Error fetching weekly sales:', error);
@@ -51,47 +63,94 @@ export default function LineChart({ sellerId }) {
         return;
       }
 
-      const weeklyTotals = {
-        Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0,
-      };
+      // const weeklyTotals = {
+      //   Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0,
+      // };
 
-      data.forEach((item) => {
-        const date = DateTime.fromISO(item.created_at, { zone: 'Asia/Jakarta' })
-        const dayKey = date.toFormat('ccc') // "Mon", "Tue", dst
-        if (weeklyTotals[dayKey] !== undefined) {
-          weeklyTotals[dayKey] += item.price * item.quantity
+      // data.forEach((item) => {
+      //   const date = DateTime.fromISO(item.created_at, { zone: 'Asia/Jakarta' })
+      //   const dayKey = date.toFormat('ccc') // "Mon", "Tue", dst
+      //   if (weeklyTotals[dayKey] !== undefined) {
+      //     weeklyTotals[dayKey] += item.price * item.quantity
+      //   }
+      // })
+
+      // const finalData = [
+      //   { day: 'Mon', total_pendapatan: weeklyTotals.Mon },
+      //   { day: 'Tue', total_pendapatan: weeklyTotals.Tue },
+      //   { day: 'Wed', total_pendapatan: weeklyTotals.Wed },
+      //   { day: 'Thu', total_pendapatan: weeklyTotals.Thu },
+      //   { day: 'Fri', total_pendapatan: weeklyTotals.Fri },
+      //   { day: 'Sat', total_pendapatan: weeklyTotals.Sat },
+      //   { day: 'Sun', total_pendapatan: weeklyTotals.Sun },
+      // ];
+
+      let groupedData = {};
+      let labels = [];
+
+      if (rangeType === 'week') {
+        groupedData = { Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0 };
+        labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+
+        data.forEach(item => {
+          const date = DateTime.fromISO(item.created_at, { zone: 'Asia/Jakarta' });
+          const day = date.toFormat('ccc');
+          if (groupedData[day] !== undefined) {
+            groupedData[day] += item.price * item.quantity;
+          }
+        });
+      } else if (rangeType === 'month') {
+        // Label: tanggal 1-31
+        for (let i = 1; i <= now.daysInMonth; i++) {
+          groupedData[i] = 0;
         }
-      })
+        labels = Object.keys(groupedData).map(day => `Tgl ${day}`);
 
-      const finalData = [
-        { day: 'Mon', total_pendapatan: weeklyTotals.Mon },
-        { day: 'Tue', total_pendapatan: weeklyTotals.Tue },
-        { day: 'Wed', total_pendapatan: weeklyTotals.Wed },
-        { day: 'Thu', total_pendapatan: weeklyTotals.Thu },
-        { day: 'Fri', total_pendapatan: weeklyTotals.Fri },
-        { day: 'Sat', total_pendapatan: weeklyTotals.Sat },
-        { day: 'Sun', total_pendapatan: weeklyTotals.Sun },
-      ];
+        data.forEach(item => {
+          const date = DateTime.fromISO(item.created_at, { zone: 'Asia/Jakarta' });
+          const day = date.day;
+          groupedData[day] += item.price * item.quantity;
+        });
+      } else if (rangeType === 'year') {
+        // Label: Jan–Des
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        labels = [...months];
+        months.forEach((_, i) => {
+          groupedData[i + 1] = 0;
+        });
 
-      setData(finalData);
+        data.forEach(item => {
+          const date = DateTime.fromISO(item.created_at, { zone: 'Asia/Jakarta' });
+          const month = date.month;
+          groupedData[month] += item.price * item.quantity;
+        });
+      }
+
+      const finalData = Object.values(groupedData);
+      setData({ labels, values: finalData });
       setLoading(false);
     };
 
-    fetchWeeklySales();
-  }, [sellerId]);
+      // setData(finalData);
+      // setLoading(false);
+
+    // fetchWeeklySales();
+    fetchSales();
+  }, [sellerId, rangeType]);
 
   const chartData = {
-    labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+    labels: data.labels || [],
     datasets: [
       {
         label: 'Penjualan Harian (Rp)',
-        data: data.map((item) => item.total_pendapatan),
+        // data: data.map((item) => item.total_pendapatan),
+        data: data.values || [],
         borderColor: 'rgba(54, 162, 235, 1)',
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         pointBackgroundColor: 'white',
         pointBorderColor: 'rgba(54, 162, 235, 1)',
-        pointBorderWidth: 3,
-        pointRadius: 6,
+        pointBorderWidth: 2,
+        pointRadius: 4,
         tension: 0.4, // garis halus
         fill: false,
       },
@@ -119,8 +178,7 @@ export default function LineChart({ sellerId }) {
       },
       tooltip: {
         callbacks: {
-          label: (context) =>
-            'Rp ' + context.raw.toLocaleString('id-ID'),
+          label: (context) => 'Rp ' + context.raw.toLocaleString('id-ID'),
         },
       },
     },

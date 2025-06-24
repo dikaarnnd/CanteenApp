@@ -9,12 +9,14 @@ import NPaidBtn from '../assets/npaid.png'
 const STATUSES = ['queue', 'process', 'ready', 'paid']
 const LIMIT_PER_STATUS = 100
 
-export default function Pesanan({ sellerId }) {
+export default function Pesanan({ sellerId, visibleStatuses = ['queue', 'process', 'ready', 'npaid', 'cancel'] }) {
   const [orders, setOrders] = useState({
     queue: [],
     process: [],
     ready: [],
-    paid: []
+    paid: [],
+    npaid: [],
+    cancel: []
   })
 
   function getTodayDateRangeInUTC() {
@@ -97,7 +99,9 @@ export default function Pesanan({ sellerId }) {
       queue: 'Tidak ada pesanan',
       process: 'Belum ada pesanan yang disetujui',
       ready: 'Belum ada pesanan yang siap',
-      paid: 'Belum ada pesanan yang dibayar'
+      paid: 'Belum ada pesanan yang dibayar',
+      npaid: 'Belum ada pesanan yang tidak dibayar',
+      cancel: 'Tidak ada pesanan yang dibatalkan'
     }
 
     return (
@@ -148,13 +152,24 @@ export default function Pesanan({ sellerId }) {
   }
 
   return (
-    <div className='flex-grow grid grid-rows-4 gap-2 px-6'>
-      {renderOrderList('queue', 'Menunggu persetujuan', { status: 'process' }, { status: 'cancel' })}
-      {renderOrderList('process', 'Sedang diproses', { status: 'ready' }, { status: 'queue' })}
-      {renderOrderList('ready', 'Pesanan Siap',
-        { status: 'paid' },
-        { status: 'process' },
-        { status: 'npaid', label: <img src={NPaidBtn} className='w-5 h-5' /> })}
+    <div className='flex flex-col mb-3 gap-2 px-6'>
+      {visibleStatuses.includes('queue') &&
+        renderOrderList('queue', 'Menunggu persetujuan', { status: 'process' }, { status: 'cancel' })}
+      
+      {visibleStatuses.includes('process') &&
+        renderOrderList('process', 'Sedang diproses', { status: 'ready' }, { status: 'queue' })}
+      
+      {visibleStatuses.includes('ready') &&
+        renderOrderList('ready', 'Pesanan Siap',
+          { status: 'paid' },
+          { status: 'process' },
+          { status: 'npaid', label: <img src={NPaidBtn} className='w-5 h-5' /> })}
+      
+      {visibleStatuses.includes('npaid') &&
+        renderOrderList('npaid', 'Tidak Dibayar/Diambil', { status: 'paid' })}
+      
+      {visibleStatuses.includes('cancel') &&
+        renderOrderList('cancel', 'Dibatalkan', { status: 'queue' })}
     </div>
   )
 }

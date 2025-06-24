@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/supabaseClient';
 import TopBar from '@/components/TopBar'
+import PieChart from '@/components/PieChart'
+import LineChart from '@/components/LineChart'
+import PaidCount from '@/components/PaidCount';
+import Pesanan from '@/components/Pesanan'
 import Camera from '@/assets/camera.png' 
 
 export default function ProfileSlr() {
@@ -84,162 +88,101 @@ export default function ProfileSlr() {
     navigate('/loginslr')
   }
   return (
-    <div className=" bg-[#FFFDED]">
+    <div className="flex flex-col bg-[#FFFDED] min-h-screen">
       <TopBar />
-      
+
       {/* Main Content */}
-      <main className="flex-grow p-4 text-black h-full">
-        <div className="flex flex-col-reverse lg:flex-row lg:h-screen gap-4">
-          
-          {/* Sidebar Kiri */}
-          <div className="w-full lg:w-1/3 flex flex-col items-center">
-            <label className='cursor-pointer w-full'>
-              <div className='flex justify-center items-center gap-2 border-dashed border-2 h-48 w-full rounded-md mb-3 shadow-md'>
-                {previewUrl || seller.image_url ? (
-                  <img
-                    src={previewUrl || seller.image_url}
-                    alt="preview"
-                    className="w-full h-full object-cover rounded-md"
-                  />
-                ) : (
-                  <>
-                    <img src={Camera} className='w-5 h-5' />
-                    <span>Tambahkan foto</span>
-                  </>
-                )}
-              </div>
-              <input type="file" onChange={handleImageChange} className="hidden" />
-            </label>
-            
-            <div className="w-full space-y-3">
-              <div className="text-left">
-                <label className="block text-sm font-semibold mb-1">
-                  Nama Pemilik Resto<span className="text-red-500">*</span>
-                </label>
-                <input
-                  name="nama"
-                  type="text"
-                  value={seller.nama}
-                  onChange={handleChange}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
-              <div className="text-left">
-                <label className="block text-sm font-semibold mb-1">
-                  Nama Resto<span className="text-red-500">*</span>
-                </label>
-                <input
-                  name="nama_kantin"
-                  type="text"
-                  value={seller.nama_kantin}
-                  onChange={handleChange}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div >
-              <button onClick={handleSave}
-              className="w-full bg-[#5f6f53] text-white font-semibold py-2 rounded hover:bg-[#4d5a44] transition cursor-pointer shadow-md">
-                Simpan
-              </button>
+      <main className="flex flex-col-reverse w-full h-full p-4 gap-3 text-black md:flex-row">
 
+        {/* Sidebar Kiri */}
+        <div className="flex flex-col items-center w-full h-full lg:w-1/4">
+
+          {/* Foto */}
+          <label className="cursor-pointer w-full">
+            <div className="flex justify-center items-center gap-2 border-dashed border-2 h-64 w-full rounded-md mb-3 shadow-md">
+              {previewUrl || seller.image_url ? (
+                <img
+                  src={previewUrl || seller.image_url}
+                  alt="preview"
+                  className="w-full h-full object-cover rounded-md"
+                />
+              ) : (
+                <>
+                  <img src={Camera} className="w-5 h-5" />
+                  <span>Tambahkan foto</span>
+                </>
+              )}
             </div>
+            <input type="file" onChange={handleImageChange} className="hidden" />
+          </label>
 
-            {/* Logout di bawah sidebar */}
+          {/* Form Input */}
+          <div className="w-full space-y-3">
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Nama Pemilik Resto<span className="text-red-500">*</span>
+              </label>
+              <input
+                name="nama"
+                type="text"
+                value={seller.nama}
+                onChange={handleChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Nama Resto<span className="text-red-500">*</span>
+              </label>
+              <input
+                name="nama_kantin"
+                type="text"
+                value={seller.nama_kantin}
+                onChange={handleChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
             <button
-              onClick={handleLogout}
-              className="mt-auto w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition cursor-pointer shadow-md"
+              onClick={handleSave}
+              className="w-full bg-[#5f6f53] text-white font-semibold py-2 rounded hover:bg-[#4d5a44] transition cursor-pointer shadow-md"
             >
-              Logout
+              Simpan
             </button>
           </div>
 
-          {/* Area Konten Kanan */}
-          <div className="w-full lg:w-2/3 bg-[#fefcea] border rounded-md min-h-[400px]"></div>
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            className="mt-4 w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition cursor-pointer shadow-md"
+          >
+            Logout
+          </button>
+        </div>
+
+        {/* Konten Kanan */}
+        <div className="flex flex-col h-full w-full p-3 gap-4 bg-[#fefcea] border rounded-md shadow-md lg:w-3/4">
+          
+          {/* Pie Chart, Total Penjualan, dan Line Chart */}
+          <div className='flex flex-col justify-between mt-3 gap-3 lg:flex-row lg:w-full'>
+
+            {/* Pie Chart, Total Penjualan */}
+            <div className='flex w-full justify-around items-center lg:w-1/3 lg:flex-col'>
+              <PieChart sellerId={sellerId} filterTodayOnly={false} />
+              <PaidCount sellerId={sellerId} />
+            </div>
+
+            {/* Line Chart */}
+            <div className='lg:w-2/3'>
+              <LineChart sellerId={sellerId} rangeType="month" />
+            </div>
+          </div>
+
+          {/* Data npaid & cancel */}
+          <div className='text-[#FFFDED]'>
+            <Pesanan sellerId={sellerId} visibleStatuses={['npaid','cancel']} />
+          </div>
         </div>
       </main>
     </div>
-  )
+  );
 }
-
-// FormUploadSeller.js
-// import React, { useState } from 'react';
-// import { supabase } from '@/supabaseClient';
-
-// export default function FormUploadSeller() {
-//   const [nama, setNama] = useState('');
-//   const [namaKantin, setNamaKantin] = useState('');
-//   const [imageFile, setImageFile] = useState(null);
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     // 1. Upload gambar ke storage
-//     let imageUrl = '';
-//     if (imageFile) {
-//       const fileExt = imageFile.name.split('.').pop();
-//       const fileName = `${Date.now()}.${fileExt}`;
-//       const { data, error: uploadError } = await supabase.storage
-//         .from('productpict') // nama bucket
-//         .upload(fileName, imageFile);
-
-//       if (uploadError) {
-//         console.error('Upload error:', uploadError.message);
-//         return;
-//       }
-
-//       const { data: publicData } = supabase.storage
-//         .from('productpict')
-//         .getPublicUrl(fileName);
-
-//       imageUrl = publicData.publicUrl;
-//     }
-
-//     // 2. Insert ke tabel seller
-//     const { error: insertError } = await supabase
-//       .from('seller')
-//       .insert([{ nama, nama_kantin: namaKantin, image_url: imageUrl }]);
-
-//     if (insertError) {
-//       console.error('Insert error:', insertError.message);
-//       alert('Gagal menyimpan data.');
-//     } else {
-//       alert('Data berhasil disimpan!');
-//       setNama('');
-//       setNamaKantin('');
-//       setImageFile(null);
-//     }
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit} className="space-y-4 p-4">
-//       <div>
-//         <label>Nama Pemilik:</label>
-//         <input
-//           type="text"
-//           value={nama}
-//           onChange={(e) => setNama(e.target.value)}
-//           className="border px-2 py-1 w-full"
-//           required
-//         />
-//       </div>
-//       <div>
-//         <label>Nama Resto:</label>
-//         <input
-//           type="text"
-//           value={namaKantin}
-//           onChange={(e) => setNamaKantin(e.target.value)}
-//           className="border px-2 py-1 w-full"
-//         />
-//       </div>
-//       <div>
-//         <label>Upload Gambar:</label>
-//         <input type="file" onChange={(e) => setImageFile(e.target.files[0])} />
-//       </div>
-//       <button
-//         type="submit"
-//         className="bg-green-600 text-white px-4 py-2 rounded"
-//       >
-//         Simpan
-//       </button>
-//     </form>
-//   );
-// }
