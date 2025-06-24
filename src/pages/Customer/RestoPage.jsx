@@ -42,31 +42,65 @@ export default function RestoPage() {
     fetchProducts();
   }, [id]);
 
-    const handleAddToBasket = async (product) => {
-    const nim = localStorage.getItem('nim'); // Get the NIM from session
+  const handleAddToBasket = async (product) => {
+      const nim = localStorage.getItem('nim');
 
-    if (!nim) {
-        alert('You must be logged in to add items to the basket.');
-        return;
-    }
+      if (!nim) {
+          alert('You must be logged in to add items to the basket.');
+          return;
+      }
 
-    const { data, error } = await supabase
-        .from('keranjang') // Replace with your actual table name
-        .insert([
-        {
-            product_id: product.id,
-            quantity: 1, // Default quantity
-            mhs_nim: nim, // Associate with the logged-in student
-        },
-        ]);
+      try {
+          // First, check if the item already exists in the basket
+          const { data: existingItem, error: fetchError } = await supabase
+              .from('keranjang')
+              .select('id, quantity')
+              .eq('product_id', product.id)
+              .eq('mhs_nim', nim)
+              .single();
 
-    if (error) {
-        console.error('Error adding to basket:', error);
-        alert('Failed to add item to basket.');
-    } else {
-        alert('Item added to basket successfully!');
-    }
-    };
+          if (fetchError && fetchError.code !== 'PGRST116') {
+              // PGRST116 is "not found" error, which is expected if item doesn't exist
+              console.error('Error checking existing item:', fetchError);
+              alert('Failed to check basket.');
+              return;
+          }
+
+          if (existingItem) {
+              // Item exists, update the quantity
+              const { error: updateError } = await supabase
+                  .from('keranjang')
+                  .update({ quantity: existingItem.quantity + 1 })
+                  .eq('id', existingItem.id);
+
+              if (updateError) {
+                  console.error('Error updating basket:', updateError);
+                  alert('Failed to update item quantity.');
+              } else {
+                  alert('Item quantity updated in basket!');
+              }
+          } else {
+              // Item doesn't exist, insert new item
+              const { error: insertError } = await supabase
+                  .from('keranjang')
+                  .insert([{
+                      product_id: product.id,
+                      quantity: 1,
+                      mhs_nim: nim,
+                  }]);
+
+              if (insertError) {
+                  console.error('Error adding to basket:', insertError);
+                  alert('Failed to add item to basket.');
+              } else {
+                  alert('Item added to basket successfully!');
+              }
+          }
+      } catch (error) {
+          console.error('Error in handleAddToBasket:', error);
+          alert('An error occurred while adding to basket.');
+      }
+  };
 
   if (!resto) {
     return (

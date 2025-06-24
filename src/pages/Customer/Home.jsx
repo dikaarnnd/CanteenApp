@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../supabaseClient';
-import logo from '../../assets/logo.png'; // Import the logo
-import star from '../../assets/star.png'; // Import the logo
+import logo from '../../assets/logo.png';
+import star from '../../assets/star.png'; 
 
 export default function Home() {
   const navigate = useNavigate();
