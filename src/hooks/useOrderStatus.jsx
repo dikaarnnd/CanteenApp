@@ -2,6 +2,26 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
+  // Add the UTC date range function
+  function getTodayDateRangeInUTC() {
+    const now = new Date();
+
+    // Konversi ke zona waktu Indonesia (WIB = UTC+7)
+    const offsetInMs = 7 * 60 * 60 * 1000;
+    const today = new Date(now.getTime() + offsetInMs);
+
+    const startOfDay = new Date(today);
+    startOfDay.setUTCHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(today);
+    endOfDay.setUTCHours(23, 59, 59, 999);
+
+    return {
+      start: startOfDay.toISOString(),
+      end: endOfDay.toISOString()
+    };
+  }
+
 export const useOrderStatus = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,18 +39,31 @@ export const useOrderStatus = () => {
     try {
       setLoading(true);
       
-      // First, get active progress records (not paid or cancelled)
+      // Get today's date range in UTC
+      const { start, end } = getTodayDateRangeInUTC();
+      
+      // Fetch all active progress entries for the user's orders from today only
       const { data: activeProgressData, error: progressError } = await supabase
         .from('progress')
-        .select('invoice_id, order_status')
-        .in('order_status', ['queue', 'process', 'ready', 'npaid']); // Only active statuses
+        .select(`
+          invoice_id, 
+          order_status,
+          invoice!inner(
+            created_at,
+            mhs_nim
+          )
+        `)
+        .in('order_status', ['queue', 'process', 'ready', 'npaid'])
+        .eq('invoice.mhs_nim', nim)
+        .gte('invoice.created_at', start)
+        .lt('invoice.created_at', end);
 
       if (progressError) {
         console.error('Error fetching active progress:', progressError);
         throw progressError;
       }
 
-      console.log('📊 Active progress data:', activeProgressData);
+      console.log('📊 Active progress data (today only):', activeProgressData);
 
       // If no active orders, return empty
       if (!activeProgressData || activeProgressData.length === 0) {
@@ -60,6 +93,8 @@ export const useOrderStatus = () => {
         `)
         .eq('mhs_nim', nim)
         .in('id', activeInvoiceIds)
+        .gte('created_at', start)
+        .lt('created_at', end)
         .order('created_at', { ascending: false });
 
       if (ordersError) {
@@ -67,7 +102,7 @@ export const useOrderStatus = () => {
         throw ordersError;
       }
 
-      console.log('📊 Active orders data:', ordersData);
+      console.log('📊 Active orders data (today only):', ordersData);
 
       // Group orders and add their current status from progress
       const groupedOrders = groupOrdersByInvoice(ordersData || [], activeProgressData);
@@ -142,24 +177,6 @@ export const useOrderStatus = () => {
     }
   };
 
-  // USER ACTION: Mark as taken for 'npaid' orders
-  const handleMarkAsTaken = async (invoiceId) => {
-    try {
-      const { error } = await supabase
-        .from('progress')
-        .update({ order_status: 'paid' })
-        .eq('invoice_id', invoiceId);
-
-      if (error) throw error;
-
-      fetchAllOrders(); // Refresh to remove completed order
-      alert('Order marked as taken! Thank you!');
-    } catch (error) {
-      console.error('Error marking as taken:', error);
-      alert('Failed to mark as taken. Please try again.');
-    }
-  };
-
   // USER ACTION: Cancel order (only allowed for 'queue' status)
   const handleCancelOrder = async (invoiceId) => {
     try {
@@ -207,7 +224,6 @@ export const useOrderStatus = () => {
     loading,
     fetchAllOrders,
     handleConfirmPickup,
-    handleMarkAsTaken,
     handleCancelOrder
   };
 };

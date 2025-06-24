@@ -8,6 +8,15 @@ export const useBasket = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
 
+  // Add Indonesian time function
+  const getIndonesianTime = () => {
+    const now = new Date();
+    // Convert to Indonesian time (UTC+7)
+    const offsetInMs = 7 * 60 * 60 * 1000;
+    const indonesianTime = new Date(now.getTime() + offsetInMs);
+    return indonesianTime.toISOString();
+  };
+
   const fetchBasket = async () => {
     const nim = localStorage.getItem('nim');
 
@@ -66,7 +75,7 @@ export const useBasket = () => {
     }, 0);
   };
 
-    const handleUpdateQuantity = async (id, newQuantity) => {
+  const handleUpdateQuantity = async (id, newQuantity) => {
     if (newQuantity < 1) {
       // If quantity is less than 1, remove the item
       handleRemoveItem(id);
@@ -108,6 +117,10 @@ export const useBasket = () => {
     try {
       const invoiceIds = [];
       const createdInvoices = [];
+      
+      // Get Indonesian time for all orders
+      const indonesianTime = getIndonesianTime();
+      console.log('🕐 Order created at Indonesian time:', indonesianTime);
 
       // Create orders in the invoice table
       for (const item of basket) {
@@ -122,8 +135,10 @@ export const useBasket = () => {
           quantity: item.quantity,
           price: item.product.price,
           total: item.product.price * item.quantity,
-          created_at: new Date().toISOString()
+          created_at: indonesianTime
         };
+
+        console.log('📦 Creating invoice with payload:', payload);
 
         const { data, error: invoiceError } = await supabase
           .from('invoice')
@@ -145,6 +160,8 @@ export const useBasket = () => {
         }
       }
 
+      console.log('✅ Created invoice IDs:', invoiceIds);
+
       // Create progress records
       const createdProgress = [];
       for (const invoiceId of invoiceIds) {
@@ -152,6 +169,8 @@ export const useBasket = () => {
           invoice_id: invoiceId,
           order_status: 'queue'
         };
+
+        console.log('📊 Creating progress record:', progressPayload);
 
         const { error: progressError } = await supabase
           .from('progress')
@@ -171,6 +190,8 @@ export const useBasket = () => {
         createdProgress.push(invoiceId);
       }
 
+      console.log('✅ Created progress records for invoice IDs:', createdProgress);
+
       // Clear basket
       const basketClearPromises = basket.map(item => 
         supabase.from('keranjang').delete().eq('id', item.id)
@@ -179,7 +200,7 @@ export const useBasket = () => {
 
       setBasket([]);
       alert(`Order created successfully! Invoice IDs: ${invoiceIds.join(', ')}`);
-      navigate('/order-status'); // Remove the invoice ID parameter
+      navigate('/order-status');
 
     } catch (error) {
       console.error('Checkout error:', error);

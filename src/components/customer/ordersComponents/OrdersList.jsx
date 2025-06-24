@@ -2,7 +2,7 @@ import React from 'react';
 import OrderCard from './OrderCard';
 import EmptyOrders from './EmptyOrders';
 
-export default function OrdersList({ orders, loading, onConfirmPickup, onMarkAsTaken, onCancelOrder, onRefresh }) {
+export default function OrdersList({ orders, loading, onConfirmPickup, onCancelOrder, onRefresh }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -25,7 +25,6 @@ export default function OrdersList({ orders, loading, onConfirmPickup, onMarkAsT
               key={order.invoice_id}
               order={order}
               onConfirmPickup={onConfirmPickup}
-              onMarkAsTaken={onMarkAsTaken}
               onCancelOrder={onCancelOrder}
             />
           ))}

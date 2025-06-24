@@ -24,15 +24,6 @@ export default function OrderCard({ order, onConfirmPickup, onMarkAsTaken, onCan
     }
   };
 
-  const handleMarkAsTaken = async () => {
-    setIsLoading(true);
-    try {
-      await onMarkAsTaken(order.invoice_id);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="bg-white rounded-lg shadow-sm border p-6">
       {/* Order Header */}
@@ -97,10 +88,18 @@ export default function OrderCard({ order, onConfirmPickup, onMarkAsTaken, onCan
           </button>
         )}
 
-        {/* PROCESS: No actions for user (being processed) */}
+        {/* PROCESS: Show status but no actions for user */}
         {order.order_status === 'process' && (
-          <div className="flex-1 text-center text-gray-500 py-2">
-            <span>🍳 Order is being prepared...</span>
+          <div className="flex-1 text-center py-3 px-4 bg-orange-50 border border-orange-200 rounded-lg">
+            <div className="flex items-center justify-center gap-2">
+              <div className="animate-pulse">
+                <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/>
+                </svg>
+              </div>
+              <span className="text-orange-700 font-medium">Order is being prepared...</span>
+            </div>
+            <p className="text-xs text-orange-600 mt-1">Please wait while the seller prepares your order</p>
           </div>
         )}
 
@@ -119,19 +118,19 @@ export default function OrderCard({ order, onConfirmPickup, onMarkAsTaken, onCan
           </button>
         )}
 
-        {/* NPAID: User can mark as taken */}
+        {/* NPAID: Show reminder that payment is needed (read-only) */}
         {order.order_status === 'npaid' && (
-          <button
-            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
-              isLoading 
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                : 'bg-blue-500 text-white hover:bg-blue-600'
-            }`}
-            onClick={handleMarkAsTaken}
-            disabled={isLoading}
-          >
-            {isLoading ? 'Marking...' : 'Mark as Taken'}
-          </button>
+          <div className="flex-1 text-center py-3 px-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-center gap-2">
+              <div className="animate-pulse">
+                <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <span className="text-blue-700 font-medium">Payment Required</span>
+            </div>
+            <p className="text-xs text-blue-600 mt-1">Please pay at the counter to complete your order</p>
+          </div>
         )}
 
         {/* PAID: Completed orders - show reorder option */}

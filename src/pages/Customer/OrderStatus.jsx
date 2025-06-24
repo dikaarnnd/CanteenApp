@@ -9,7 +9,6 @@ export default function OrderStatus() {
     loading,
     fetchAllOrders,
     handleConfirmPickup,
-    handleMarkAsTaken,
     handleCancelOrder
   } = useOrderStatus();
 
@@ -20,7 +19,6 @@ export default function OrderStatus() {
         orders={orders}
         loading={loading}
         onConfirmPickup={handleConfirmPickup}
-        onMarkAsTaken={handleMarkAsTaken}
         onCancelOrder={handleCancelOrder}
         onRefresh={fetchAllOrders}
       />
