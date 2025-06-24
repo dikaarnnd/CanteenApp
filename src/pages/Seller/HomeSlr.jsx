@@ -37,7 +37,7 @@ export default function HomeSlr() {
 
               {/* Pie Chart */}
               <section className='flex justify-center items-center min-h-48 border-2 border-black rounded-xl shadow-md flex-grow'>
-                <PieChart sellerId={sellerId} />
+                <PieChart sellerId={sellerId} filterTodayOnly={true} />
               </section>
             </div>
 
@@ -53,7 +53,7 @@ export default function HomeSlr() {
           </div>
 
           {/* Line Chart */}
-          <div className='border-2 border-black rounded-xl shadow-md h-full md:min-h-72'>
+          <div className='border-2 border-black rounded-xl shadow-md h-72 lg:h-full'>
             <LineChart sellerId={sellerId} />
           </div>
         </div>

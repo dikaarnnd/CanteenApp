@@ -84,17 +84,19 @@ export default function ProfileSlr() {
     navigate('/loginslr')
   }
   return (
-    <div className=" bg-[#FFFDED]">
+    <div className="flex flex-col bg-[#FFFDED] min-h-screen">
       <TopBar />
-      
+
       {/* Main Content */}
-      <main className="flex-grow p-4 text-black h-full">
-        <div className="flex flex-col-reverse lg:flex-row lg:h-screen gap-4">
-          
+      <main className="flex-grow p-4 text-black">
+        <div className="flex flex-col-reverse gap-4 lg:flex-row lg:h-screen">
+
           {/* Sidebar Kiri */}
-          <div className="w-full lg:w-1/3 flex flex-col items-center">
-            <label className='cursor-pointer w-full'>
-              <div className='flex justify-center items-center gap-2 border-dashed border-2 h-48 w-full rounded-md mb-3 shadow-md'>
+          <div className="flex flex-col items-center w-full lg:w-1/3">
+
+            {/* Foto */}
+            <label className="cursor-pointer w-full">
+              <div className="flex justify-center items-center gap-2 border-dashed border-2 h-48 w-full rounded-md mb-3 shadow-md">
                 {previewUrl || seller.image_url ? (
                   <img
                     src={previewUrl || seller.image_url}
@@ -103,16 +105,17 @@ export default function ProfileSlr() {
                   />
                 ) : (
                   <>
-                    <img src={Camera} className='w-5 h-5' />
+                    <img src={Camera} className="w-5 h-5" />
                     <span>Tambahkan foto</span>
                   </>
                 )}
               </div>
               <input type="file" onChange={handleImageChange} className="hidden" />
             </label>
-            
+
+            {/* Form Input */}
             <div className="w-full space-y-3">
-              <div className="text-left">
+              <div>
                 <label className="block text-sm font-semibold mb-1">
                   Nama Pemilik Resto<span className="text-red-500">*</span>
                 </label>
@@ -124,7 +127,7 @@ export default function ProfileSlr() {
                   className="w-full border rounded px-3 py-2"
                 />
               </div>
-              <div className="text-left">
+              <div>
                 <label className="block text-sm font-semibold mb-1">
                   Nama Resto<span className="text-red-500">*</span>
                 </label>
@@ -135,111 +138,28 @@ export default function ProfileSlr() {
                   onChange={handleChange}
                   className="w-full border rounded px-3 py-2"
                 />
-              </div >
-              <button onClick={handleSave}
-              className="w-full bg-[#5f6f53] text-white font-semibold py-2 rounded hover:bg-[#4d5a44] transition cursor-pointer shadow-md">
+              </div>
+              <button
+                onClick={handleSave}
+                className="w-full bg-[#5f6f53] text-white font-semibold py-2 rounded hover:bg-[#4d5a44] transition cursor-pointer shadow-md"
+              >
                 Simpan
               </button>
-
             </div>
 
-            {/* Logout di bawah sidebar */}
+            {/* Logout */}
             <button
               onClick={handleLogout}
-              className="mt-auto w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition cursor-pointer shadow-md"
+              className="mt-4 w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition cursor-pointer shadow-md"
             >
               Logout
             </button>
           </div>
 
-          {/* Area Konten Kanan */}
-          <div className="w-full lg:w-2/3 bg-[#fefcea] border rounded-md min-h-[400px]"></div>
+          {/* Konten Kanan */}
+          <div className="w-full lg:w-2/3 bg-[#fefcea] border rounded-md shadow-md h-full"></div>
         </div>
       </main>
     </div>
-  )
+  );
 }
-
-// FormUploadSeller.js
-// import React, { useState } from 'react';
-// import { supabase } from '@/supabaseClient';
-
-// export default function FormUploadSeller() {
-//   const [nama, setNama] = useState('');
-//   const [namaKantin, setNamaKantin] = useState('');
-//   const [imageFile, setImageFile] = useState(null);
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     // 1. Upload gambar ke storage
-//     let imageUrl = '';
-//     if (imageFile) {
-//       const fileExt = imageFile.name.split('.').pop();
-//       const fileName = `${Date.now()}.${fileExt}`;
-//       const { data, error: uploadError } = await supabase.storage
-//         .from('productpict') // nama bucket
-//         .upload(fileName, imageFile);
-
-//       if (uploadError) {
-//         console.error('Upload error:', uploadError.message);
-//         return;
-//       }
-
-//       const { data: publicData } = supabase.storage
-//         .from('productpict')
-//         .getPublicUrl(fileName);
-
-//       imageUrl = publicData.publicUrl;
-//     }
-
-//     // 2. Insert ke tabel seller
-//     const { error: insertError } = await supabase
-//       .from('seller')
-//       .insert([{ nama, nama_kantin: namaKantin, image_url: imageUrl }]);
-
-//     if (insertError) {
-//       console.error('Insert error:', insertError.message);
-//       alert('Gagal menyimpan data.');
-//     } else {
-//       alert('Data berhasil disimpan!');
-//       setNama('');
-//       setNamaKantin('');
-//       setImageFile(null);
-//     }
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit} className="space-y-4 p-4">
-//       <div>
-//         <label>Nama Pemilik:</label>
-//         <input
-//           type="text"
-//           value={nama}
-//           onChange={(e) => setNama(e.target.value)}
-//           className="border px-2 py-1 w-full"
-//           required
-//         />
-//       </div>
-//       <div>
-//         <label>Nama Resto:</label>
-//         <input
-//           type="text"
-//           value={namaKantin}
-//           onChange={(e) => setNamaKantin(e.target.value)}
-//           className="border px-2 py-1 w-full"
-//         />
-//       </div>
-//       <div>
-//         <label>Upload Gambar:</label>
-//         <input type="file" onChange={(e) => setImageFile(e.target.files[0])} />
-//       </div>
-//       <button
-//         type="submit"
-//         className="bg-green-600 text-white px-4 py-2 rounded"
-//       >
-//         Simpan
-//       </button>
-//     </form>
-//   );
-// }
