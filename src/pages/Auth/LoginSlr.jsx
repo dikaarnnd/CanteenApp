@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs'
 import { Link } from 'react-router-dom'
 
 import imgLogin from '../../assets/LoginReg.png'
-import logo from '../../assets/logo.png'
+import logo from '../../assets/Logo.png'
 
 export default function LoginSlr() {
   const [id, setId] = useState('')
