@@ -71,6 +71,7 @@ export default function ProductView() {
     event.preventDefault();
 
     const formData = new FormData(event.target);
+    const id = (Math.trunc(Math.random() * 100) + 1);
     const image = formData.get("image");
     const name = formData.get("name");
     const price = formData.get("price");
@@ -78,6 +79,7 @@ export default function ProductView() {
     const sellerId = localStorage.getItem('seller_id');
 
     console.log({
+      id,
       image,
       name,
       price,
@@ -85,10 +87,10 @@ export default function ProductView() {
       sellerId,
     });
 
-    // if (!image || !image.name) {
-    //   alert("Harap pilih gambar!");
-    //   return;
-    // }
+    if (!image || !image.name) {
+      alert("Harap pilih gambar!");
+      return;
+    }
     if (!sellerId) {
     alert("Seller ID tidak ditemukan. Harap login ulang.");
     return;
@@ -115,10 +117,11 @@ export default function ProductView() {
 
       const { error } = await supabase.from("product").insert([
         {
+          id,
           name,
           price,
           desk,
-          img_url: imageUrl,
+          image_url: imageUrl,
           seller_id: parseInt(sellerId),
         },
       ]);
@@ -193,8 +196,8 @@ export default function ProductView() {
                 .map((product) => (
                   <li key={product.id} className=' ml-5'>
                     <div className='bg-[#9BA38D] w-[52rem] h-36 rounded-md flex flex-row'>
-                      <div className='w-[12rem] rounded-l-md'>
-                        <img src={product.image_url} alt={product.name} />
+                      <div className='w-[12rem] h-36 rounded-l-md'>
+                        <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
                       </div>
                       <div className='w-[30rem]  m-4'>
                         <h1 className='text-xl text-[#3A4D39] font-bold'>

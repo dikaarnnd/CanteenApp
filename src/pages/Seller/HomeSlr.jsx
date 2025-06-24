@@ -1,6 +1,3 @@
-import { useNavigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
-
 import TopBar from '@/components/TopBar'
 import Pendapatan from '@/components/Pendapatan'
 import HighRating from '@/components/HighRating'

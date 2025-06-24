@@ -45,7 +45,7 @@ export default function ProfileSlr() {
       const fileExt = imageFile.name.split('.').pop();
       const fileName = `${sellerId}_${Date.now()}.${fileExt}`;
       const { data, error } = await supabase.storage
-        .from('productpict')
+        .from('sellerproductpict')
         .upload(fileName, imageFile, { cacheControl: '3600', upsert: true });
 
       if (error) {
@@ -55,7 +55,7 @@ export default function ProfileSlr() {
 
       const { data: publicUrl } = supabase
         .storage
-        .from('productpict')
+        .from('sellerproductpict')
         .getPublicUrl(fileName);
 
       uploadedUrl = publicUrl.publicUrl;
@@ -159,3 +159,87 @@ export default function ProfileSlr() {
     </div>
   )
 }
+
+// FormUploadSeller.js
+// import React, { useState } from 'react';
+// import { supabase } from '@/supabaseClient';
+
+// export default function FormUploadSeller() {
+//   const [nama, setNama] = useState('');
+//   const [namaKantin, setNamaKantin] = useState('');
+//   const [imageFile, setImageFile] = useState(null);
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     // 1. Upload gambar ke storage
+//     let imageUrl = '';
+//     if (imageFile) {
+//       const fileExt = imageFile.name.split('.').pop();
+//       const fileName = `${Date.now()}.${fileExt}`;
+//       const { data, error: uploadError } = await supabase.storage
+//         .from('productpict') // nama bucket
+//         .upload(fileName, imageFile);
+
+//       if (uploadError) {
+//         console.error('Upload error:', uploadError.message);
+//         return;
+//       }
+
+//       const { data: publicData } = supabase.storage
+//         .from('productpict')
+//         .getPublicUrl(fileName);
+
+//       imageUrl = publicData.publicUrl;
+//     }
+
+//     // 2. Insert ke tabel seller
+//     const { error: insertError } = await supabase
+//       .from('seller')
+//       .insert([{ nama, nama_kantin: namaKantin, image_url: imageUrl }]);
+
+//     if (insertError) {
+//       console.error('Insert error:', insertError.message);
+//       alert('Gagal menyimpan data.');
+//     } else {
+//       alert('Data berhasil disimpan!');
+//       setNama('');
+//       setNamaKantin('');
+//       setImageFile(null);
+//     }
+//   };
+
+//   return (
+//     <form onSubmit={handleSubmit} className="space-y-4 p-4">
+//       <div>
+//         <label>Nama Pemilik:</label>
+//         <input
+//           type="text"
+//           value={nama}
+//           onChange={(e) => setNama(e.target.value)}
+//           className="border px-2 py-1 w-full"
+//           required
+//         />
+//       </div>
+//       <div>
+//         <label>Nama Resto:</label>
+//         <input
+//           type="text"
+//           value={namaKantin}
+//           onChange={(e) => setNamaKantin(e.target.value)}
+//           className="border px-2 py-1 w-full"
+//         />
+//       </div>
+//       <div>
+//         <label>Upload Gambar:</label>
+//         <input type="file" onChange={(e) => setImageFile(e.target.files[0])} />
+//       </div>
+//       <button
+//         type="submit"
+//         className="bg-green-600 text-white px-4 py-2 rounded"
+//       >
+//         Simpan
+//       </button>
+//     </form>
+//   );
+// }

@@ -8,7 +8,7 @@ export default function ProtectedRoute({ children }) {
   const path = location.pathname
 
   // Validasi route seller
-  if (path.startsWith('/homeslr') || path.startsWith('/profileslr')) {
+  if (path.startsWith('/homeslr') || path.startsWith('/profileslr') || path.startsWith('/productview')) {
     if (!id || role !== 'seller') {
       return <Navigate to="/loginslr" />
     }
