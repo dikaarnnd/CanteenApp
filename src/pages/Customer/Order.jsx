@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBasket } from '../../hooks/useBasket';
-import BasketItem from '../../components/customer/BasketItems';
-import EmptyBasket from '../../components/customer/EmptyBasket';
-import CheckoutSummary from '../../components/customer/CheckoutSummary';
+import BasketItem from '../../components/customer/basketComponents/BasketItems';
+import EmptyBasket from '../../components/customer/basketComponents/EmptyBasket';
+import CheckoutSummary from '../../components/customer/basketComponents/CheckoutSummary';
 
 export default function Order() {
   const navigate = useNavigate();

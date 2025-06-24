@@ -150,7 +150,7 @@ export const useBasket = () => {
       for (const invoiceId of invoiceIds) {
         const progressPayload = {
           invoice_id: invoiceId,
-          order_status: 'npaid'
+          order_status: 'queue'
         };
 
         const { error: progressError } = await supabase
@@ -179,7 +179,7 @@ export const useBasket = () => {
 
       setBasket([]);
       alert(`Order created successfully! Invoice IDs: ${invoiceIds.join(', ')}`);
-      navigate(`/order-status/${invoiceIds[0]}`);
+      navigate('/order-status'); // Remove the invoice ID parameter
 
     } catch (error) {
       console.error('Checkout error:', error);

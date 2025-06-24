@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 export default function BasketItem({ item, onRemove, onUpdateQuantity }) {
   const [isRemoving, setIsRemoving] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   if (!item.product) {
     return null; // Don't render invalid items
@@ -31,21 +32,36 @@ export default function BasketItem({ item, onRemove, onUpdateQuantity }) {
     }
   };
 
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   const totalPrice = item.product.price * item.quantity;
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-all duration-300">
       <div className="flex items-center gap-4">
         {/* Product Image */}
-        <div className="relative overflow-hidden rounded-lg bg-gray-100 flex-shrink-0">
-          <img
-            src={item.product.image_url || 'https://via.placeholder.com/80x80/9BA38D/FFFFFF?text=Food'}
-            alt={item.product.name}
-            className="w-20 h-20 object-cover transition-transform duration-300 hover:scale-105"
-            onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/80x80/9BA38D/FFFFFF?text=Food';
-            }}
-          />
+        <div className="relative overflow-hidden rounded-lg bg-gray-100 flex-shrink-0 w-20 h-20">
+          {item.product.image_url && !imageError ? (
+            <img
+              src={item.product.image_url}
+              alt={item.product.name}
+              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+              onError={handleImageError}
+            />
+          ) : (
+            // Fallback: Simple colored div with food icon
+            <div className="w-full h-full bg-[#9BA38D] flex items-center justify-center">
+              <svg 
+                className="w-8 h-8 text-white" 
+                fill="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/>
+              </svg>
+            </div>
+          )}
         </div>
 
         {/* Product Details */}
@@ -61,20 +77,33 @@ export default function BasketItem({ item, onRemove, onUpdateQuantity }) {
                 </p>
               )}
 
+              {/* Price per item */}
+              <p className="text-sm text-gray-500 mb-2">
+                Rp {item.product.price.toLocaleString('id-ID')} each
+              </p>
+
               {/* Quantity Controls */}
               <div className="flex items-center gap-3 mt-2">
                 <button
-                  className="bg-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-300 transition-colors"
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                    isUpdating
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  }`}
                   onClick={() => handleUpdateQuantity(item.quantity - 1)}
                   disabled={isUpdating}
                 >
-                  -
+                  −
                 </button>
-                <span className="text-sm font-medium text-gray-900">
+                <span className="text-sm font-medium text-gray-900 min-w-[60px] text-center">
                   {item.quantity} item{item.quantity > 1 ? 's' : ''}
                 </span>
                 <button
-                  className="bg-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-300 transition-colors"
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                    isUpdating
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  }`}
                   onClick={() => handleUpdateQuantity(item.quantity + 1)}
                   disabled={isUpdating}
                 >
@@ -105,7 +134,7 @@ export default function BasketItem({ item, onRemove, onUpdateQuantity }) {
               >
                 {isRemoving ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400 mr-1"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-400 mr-1"></div>
                     <span>Removing...</span>
                   </>
                 ) : (
@@ -121,6 +150,13 @@ export default function BasketItem({ item, onRemove, onUpdateQuantity }) {
           </div>
         </div>
       </div>
+
+      {/* Loading overlay when updating quantity */}
+      {isUpdating && (
+        <div className="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center rounded-xl">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#9BA38D]"></div>
+        </div>
+      )}
     </div>
   );
 }

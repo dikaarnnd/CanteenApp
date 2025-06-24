@@ -24,7 +24,7 @@ import ProfileSlr from './pages/Seller/ProfileSlr'
 
 // components
 import ProtectedRoute from './components/ProtectedRoute'
-// import OrderStatus from './pages/Customer/OrderStatus';
+import OrderStatus from './pages/Customer/OrderStatus';
 
 function App() {
   return (
@@ -56,7 +56,7 @@ function App() {
           }
         />
         <Route path="/order" element={<Order />} />
-        {/* <Route path="/order-status/:invoiceId" element={<OrderStatus />} /> */}
+        <Route path="/order-status" element={<OrderStatus />} />
 
         {/* Route Seller */}
         <Route path="/registerslr" element={<RegisterSlr />} />
