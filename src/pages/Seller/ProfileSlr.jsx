@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/supabaseClient';
 import TopBar from '@/components/TopBar'
+import PieChart from '@/components/PieChart'
+import LineChart from '@/components/LineChart'
+import PaidCount from '@/components/PaidCount';
 import Camera from '@/assets/camera.png' 
 
 export default function ProfileSlr() {
@@ -88,76 +91,90 @@ export default function ProfileSlr() {
       <TopBar />
 
       {/* Main Content */}
-      <main className="flex-grow p-4 text-black">
-        <div className="flex flex-col-reverse gap-4 lg:flex-row lg:h-screen">
+      <main className="flex flex-col-reverse w-full h-full p-4 gap-3 text-black md:flex-row lg:h-screen">
 
-          {/* Sidebar Kiri */}
-          <div className="flex flex-col items-center w-full lg:w-1/3">
+        {/* Sidebar Kiri */}
+        <div className="flex flex-col items-center w-full h-full lg:w-1/4">
 
-            {/* Foto */}
-            <label className="cursor-pointer w-full">
-              <div className="flex justify-center items-center gap-2 border-dashed border-2 h-48 w-full rounded-md mb-3 shadow-md">
-                {previewUrl || seller.image_url ? (
-                  <img
-                    src={previewUrl || seller.image_url}
-                    alt="preview"
-                    className="w-full h-full object-cover rounded-md"
-                  />
-                ) : (
-                  <>
-                    <img src={Camera} className="w-5 h-5" />
-                    <span>Tambahkan foto</span>
-                  </>
-                )}
-              </div>
-              <input type="file" onChange={handleImageChange} className="hidden" />
-            </label>
-
-            {/* Form Input */}
-            <div className="w-full space-y-3">
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Nama Pemilik Resto<span className="text-red-500">*</span>
-                </label>
-                <input
-                  name="nama"
-                  type="text"
-                  value={seller.nama}
-                  onChange={handleChange}
-                  className="w-full border rounded px-3 py-2"
+          {/* Foto */}
+          <label className="cursor-pointer w-full">
+            <div className="flex justify-center items-center gap-2 border-dashed border-2 h-64 w-full rounded-md mb-3 shadow-md">
+              {previewUrl || seller.image_url ? (
+                <img
+                  src={previewUrl || seller.image_url}
+                  alt="preview"
+                  className="w-full h-full object-cover rounded-md"
                 />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold mb-1">
-                  Nama Resto<span className="text-red-500">*</span>
-                </label>
-                <input
-                  name="nama_kantin"
-                  type="text"
-                  value={seller.nama_kantin}
-                  onChange={handleChange}
-                  className="w-full border rounded px-3 py-2"
-                />
-              </div>
-              <button
-                onClick={handleSave}
-                className="w-full bg-[#5f6f53] text-white font-semibold py-2 rounded hover:bg-[#4d5a44] transition cursor-pointer shadow-md"
-              >
-                Simpan
-              </button>
+              ) : (
+                <>
+                  <img src={Camera} className="w-5 h-5" />
+                  <span>Tambahkan foto</span>
+                </>
+              )}
             </div>
+            <input type="file" onChange={handleImageChange} className="hidden" />
+          </label>
 
-            {/* Logout */}
+          {/* Form Input */}
+          <div className="w-full space-y-3">
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Nama Pemilik Resto<span className="text-red-500">*</span>
+              </label>
+              <input
+                name="nama"
+                type="text"
+                value={seller.nama}
+                onChange={handleChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold mb-1">
+                Nama Resto<span className="text-red-500">*</span>
+              </label>
+              <input
+                name="nama_kantin"
+                type="text"
+                value={seller.nama_kantin}
+                onChange={handleChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
             <button
-              onClick={handleLogout}
-              className="mt-4 w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition cursor-pointer shadow-md"
+              onClick={handleSave}
+              className="w-full bg-[#5f6f53] text-white font-semibold py-2 rounded hover:bg-[#4d5a44] transition cursor-pointer shadow-md"
             >
-              Logout
+              Simpan
             </button>
           </div>
 
-          {/* Konten Kanan */}
-          <div className="w-full lg:w-2/3 bg-[#fefcea] border rounded-md shadow-md h-full"></div>
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            className="mt-4 w-full bg-red-500 text-white font-semibold py-2 rounded hover:bg-red-600 transition cursor-pointer shadow-md"
+          >
+            Logout
+          </button>
+        </div>
+
+        {/* Konten Kanan */}
+        <div className="flex flex-col h-full w-full p-3 bg-[#fefcea] border rounded-md shadow-md lg:w-3/4">
+          
+          {/* Pie Chart, Total Penjualan, dan Line Chart */}
+          <div className='flex flex-col justify-between gap-3 lg:flex-row lg:w-full'>
+
+            {/* Pie Chart, Total Penjualan */}
+            <div className='flex w-full justify-around items-center lg:w-1/3 lg:flex-col'>
+              <PieChart sellerId={sellerId} filterTodayOnly={false} />
+              <PaidCount sellerId={sellerId} />
+            </div>
+
+            {/* Line Chart */}
+            <div className='lg:w-2/3'>
+              <LineChart sellerId={sellerId} rangeType="month" />
+            </div>
+          </div>
         </div>
       </main>
     </div>

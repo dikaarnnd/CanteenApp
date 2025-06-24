@@ -54,7 +54,7 @@ export default function HomeSlr() {
 
           {/* Line Chart */}
           <div className='border-2 border-black rounded-xl shadow-md h-72 lg:h-full'>
-            <LineChart sellerId={sellerId} />
+            <LineChart sellerId={sellerId} rangeType="week" />
           </div>
         </div>
 
