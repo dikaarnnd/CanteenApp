@@ -66,6 +66,36 @@ export const useBasket = () => {
     }, 0);
   };
 
+    const handleUpdateQuantity = async (id, newQuantity) => {
+    if (newQuantity < 1) {
+      // If quantity is less than 1, remove the item
+      handleRemoveItem(id);
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('keranjang')
+        .update({ quantity: newQuantity })
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error updating quantity:', error);
+        alert('Failed to update quantity.');
+      } else {
+        // Update the local state immediately for better UX
+        setBasket(prevBasket => 
+          prevBasket.map(item => 
+            item.id === id ? { ...item, quantity: newQuantity } : item
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error in handleUpdateQuantity:', error);
+      alert('An error occurred while updating quantity.');
+    }
+  };
+
   const handleCheckout = async () => {
     if (basket.length === 0) {
       alert('Your basket is empty!');
@@ -168,6 +198,7 @@ export const useBasket = () => {
     loading,
     isProcessing,
     handleRemoveItem,
+    handleUpdateQuantity,
     calculateTotal,
     handleCheckout
   };

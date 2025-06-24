@@ -12,6 +12,7 @@ export default function Order() {
     loading,
     isProcessing,
     handleRemoveItem,
+    handleUpdateQuantity, // Add this function
     calculateTotal,
     handleCheckout
   } = useBasket();
@@ -52,6 +53,7 @@ export default function Order() {
                 key={item.id} 
                 item={item} 
                 onRemove={handleRemoveItem} 
+                onUpdateQuantity={handleUpdateQuantity} // Pass this function
               />
             ))}
           </div>
