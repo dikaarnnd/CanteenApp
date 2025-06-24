@@ -4,7 +4,7 @@ import { supabase } from '../../supabaseClient'
 import bcrypt from 'bcryptjs'
 
 import imgLogin from '../../assets/LoginReg.png'
-import logo from '../../assets/logo.png'
+import logo from '../../assets/Logo.png'
 
 export default function RegisterSlr() {
   const [id, setId] = useState('')
