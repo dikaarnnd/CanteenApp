@@ -262,7 +262,7 @@ export default function ProductView() {
                                 onClick={() => deleteProduct(product.id)}
                               />
                             </button>
-                            <button className='cursor-pointer rs'>
+                            <button className='cursor-pointer'>
                               <FaRegEdit
                                 className={`text-2xl text-[#FFFDED] ${
                                   sellerId ? "" : "hidden"
