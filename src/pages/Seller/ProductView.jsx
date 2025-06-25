@@ -253,23 +253,6 @@ export default function ProductView() {
                               Rp.{product.price}
                             </p>
                           </div>
-                          <div className='flex flex-row gap-7'>
-                            <button className='cursor-pointer'>
-                              <FaTrash
-                                className={`text-2xl text-[#FFFDED] ${
-                                  sellerId ? "" : "hidden"
-                                }`}
-                                onClick={() => deleteProduct(product.id)}
-                              />
-                            </button>
-                            <button className='cursor-pointer'>
-                              <FaRegEdit
-                                className={`text-2xl text-[#FFFDED] ${
-                                  sellerId ? "" : "hidden"
-                                }`}
-                              />
-                            </button>
-                          </div>
                         </div>
                       </div>
                     </li>
