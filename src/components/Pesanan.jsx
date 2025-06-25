@@ -6,8 +6,8 @@ import CancelBtn from '../assets/cancel.png'
 import CheckBtn from '../assets/check.png'
 import NPaidBtn from '../assets/npaid.png'
 
-const STATUSES = ['queue', 'process', 'ready', 'paid']
-const LIMIT_PER_STATUS = 100
+const STATUSES = ['queue', 'process', 'ready', 'paid', 'npaid', 'cancel']
+const LIMIT_PER_STATUS = 10
 
 export default function Pesanan({ sellerId, visibleStatuses = ['queue', 'process', 'ready', 'npaid', 'cancel'] }) {
   const [orders, setOrders] = useState({
@@ -40,51 +40,80 @@ export default function Pesanan({ sellerId, visibleStatuses = ['queue', 'process
 
 
   const fetchOrdersByStatus = async (status) => {
-    const { start, end } = getTodayDateRangeInUTC()
-    
-    const { data, error } = await supabase
-      .from('progress')
-      .select(`
-        invoice_id,
-        order_status,
-        invoice (
-          mhs_nim,
-          quantity,
-          created_at,
-          product:product_id (
-            name,
-            seller_id
-          )
+  let query = supabase
+    .from('progress')
+    .select(`
+      invoice_id,
+      order_status,
+      invoice (
+        mhs_nim,
+        quantity,
+        created_at,
+        product:product_id (
+          name,
+          seller_id
         )
-      `)
-      .eq('order_status', status)
-      .gte('invoice.created_at', start)
-      .lt('invoice.created_at', end)
-
-    if (error) {
-      console.error(`Error fetching ${status} orders:`, error)
-    } else {
-      const filtered = data.filter(order =>
-        order?.invoice?.product?.seller_id?.toString() === sellerId?.toString()
       )
-      setOrders(prev => ({
-        ...prev,
-        [status]: filtered.slice(0, LIMIT_PER_STATUS)
-      }))
-    }
+    `)
+    .eq('order_status', status)
+
+  // Hanya filter berdasarkan tanggal untuk status selain npaid dan cancel
+  if (status !== 'npaid' && status !== 'cancel') {
+    const { start, end } = getTodayDateRangeInUTC()
+    query = query.gte('invoice.created_at', start).lt('invoice.created_at', end)
   }
 
+  const { data, error } = await query
+
+  if (error) {
+    console.error(`Error fetching ${status} orders:`, error)
+  } else {
+    const filtered = data.filter(order =>
+      order?.invoice?.product?.seller_id?.toString() === sellerId?.toString()
+    )
+    setOrders(prev => ({
+      ...prev,
+      [status]: filtered.slice(0, LIMIT_PER_STATUS)
+    }))
+  }
+}
+
   const handleAction = async (progressId, newStatus) => {
-    const { error } = await supabase
+    const updates = { order_status: newStatus }
+
+    if (newStatus === 'queue') {
+      // Set waktu saat ini ke zona waktu Asia/Jakarta
+      const now = new Date()
+      const offsetMs = 7 * 60 * 60 * 1000
+      const wibDate = new Date(now.getTime() + offsetMs).toISOString()
+
+      updates.invoice = { created_at: wibDate } // Nested update
+    }
+
+    // Pisahkan update progress dan invoice
+    const { error: progressErr } = await supabase
       .from('progress')
       .update({ order_status: newStatus })
       .eq('invoice_id', progressId)
 
-    if (error) {
-      console.error(`Gagal memperbarui status menjadi ${newStatus}:`, error)
-    } else {
-      STATUSES.forEach(fetchOrdersByStatus)
+    if (progressErr) {
+      console.error(`Gagal update progress ke ${newStatus}:`, progressErr)
+      return
     }
+
+    if (newStatus === 'queue') {
+      const { error: invoiceErr } = await supabase
+        .from('invoice')
+        .update({ created_at: new Date().toISOString() })
+        .eq('id', progressId)
+
+      if (invoiceErr) {
+        console.error(`Gagal update created_at invoice:`, invoiceErr)
+        return
+      }
+    }
+
+    STATUSES.forEach(fetchOrdersByStatus)
   }
 
   useEffect(() => {
@@ -113,7 +142,7 @@ export default function Pesanan({ sellerId, visibleStatuses = ['queue', 'process
           ) : (
             <ul className='text-sm'>
               {orderList.map((order, index) => (
-                <li key={index} className='flex justify-between items-center gap-1 text-[#FFFDED]'>
+                <li key={index} className='flex justify-between items-center gap-1 text-[#FFFDED] text-[9px] sm:text-lg'>
                   <div>
                     <strong>{order.invoice.mhs_nim}</strong>
                   </div>
@@ -152,7 +181,7 @@ export default function Pesanan({ sellerId, visibleStatuses = ['queue', 'process
   }
 
   return (
-    <div className='flex flex-col mb-3 gap-2 px-6'>
+    <div className='flex flex-col mb-3 gap-2'>
       {visibleStatuses.includes('queue') &&
         renderOrderList('queue', 'Menunggu persetujuan', { status: 'process' }, { status: 'cancel' })}
       
@@ -166,10 +195,10 @@ export default function Pesanan({ sellerId, visibleStatuses = ['queue', 'process
           { status: 'npaid', label: <img src={NPaidBtn} className='w-5 h-5' /> })}
       
       {visibleStatuses.includes('npaid') &&
-        renderOrderList('npaid', 'Tidak Dibayar/Diambil', { status: 'paid' })}
+        renderOrderList('npaid', 'Tidak Dibayar/Diambil (Checklist jika pesanan sudah dibayar)', { status: 'paid' }, { status: 'cancel' })}
       
       {visibleStatuses.includes('cancel') &&
-        renderOrderList('cancel', 'Dibatalkan', { status: 'queue' })}
+        renderOrderList('cancel', 'Dibatalkan (Checklist jika pesanan kembali dipesan)', { status: 'queue' }, { status: 'npaid' })}
     </div>
   )
 }
