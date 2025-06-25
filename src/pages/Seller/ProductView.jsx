@@ -4,7 +4,7 @@ import { IoClose } from "react-icons/io5";
 import { FaTrash } from "react-icons/fa";
 import { FaRegEdit } from "react-icons/fa";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 import { supabase } from "@/supabaseClient";
 
@@ -15,71 +15,54 @@ export default function ProductView() {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [hiddenIds, setHiddenIds] = useState([]);
+  // const [hiddenIds, setHiddenIds] = useState([]);
   const [previewImage, setPreviewImage] = useState(null);
 
   // Get Seller ID
-  const sellerId = localStorage.getItem('seller_id')
-    if (!sellerId) {
-      console.warn('seller_id tidak ditemukan')
-      setLoading(false)
-      return
-    }
+  const sellerId = localStorage.getItem("seller_id");
 
   // GET DATA
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase
-        .from("product")
-        .select("*")
-        .eq("seller_id", parseInt(sellerId))
-        .order("id", { ascending: true });
-
-      if (error) {
-        setError("Gagal fetch data: " + error.message);
-      } else {
-        setProducts(data);
-      }
+  const fetchData = useCallback(async () => {
+    if (!sellerId) {
+      console.warn("seller_id tidak ditemukan");
       setLoading(false);
-    };
-
-    fetchData();
-  }, []);
-
-  function openModal() {
-    if (dialogRef.current) {
-      dialogRef.current.showModal();
+      return;
     }
-  }
 
-  function closeModal() {
-    if (dialogRef.current) {
-      dialogRef.current.close();
-    }
-  }
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("product")
+      .select("*")
+      .eq("seller_id", parseInt(sellerId))
+      .order("id", { ascending: true });
 
-  function handleToggleVisbility(id, checked) {
-    if (checked) {
-      setHiddenIds((prev) => prev.filter((hiddenId) => hiddenId !== id));
+    if (error) {
+      setError("Gagal fetch data: " + error.message);
     } else {
-      setHiddenIds((prev) => [...prev, id]);
+      setProducts(data);
     }
-  }
 
-  // POST DATA
+    setLoading(false);
+  }, [sellerId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // POST DATA (INSERT 1 ROW)
   async function handleSubmit(event) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
-    const id = (Math.trunc(Math.random() * 100) + 1);
+    // const id = Math.trunc(Math.random() * 100) + 1;
     const image = formData.get("image");
     const name = formData.get("name");
     const price = formData.get("price");
     const desk = formData.get("desk");
-    const sellerId = localStorage.getItem('seller_id');
+    const sellerId = localStorage.getItem("seller_id");
 
     console.log({
-      id,
+      // id,
       image,
       name,
       price,
@@ -92,8 +75,8 @@ export default function ProductView() {
       return;
     }
     if (!sellerId) {
-    alert("Seller ID tidak ditemukan. Harap login ulang.");
-    return;
+      alert("Seller ID tidak ditemukan. Harap login ulang.");
+      return;
     }
 
     try {
@@ -117,7 +100,7 @@ export default function ProductView() {
 
       const { error } = await supabase.from("product").insert([
         {
-          id,
+          // id,
           name,
           price,
           desk,
@@ -137,93 +120,162 @@ export default function ProductView() {
     }
   }
 
+  function openModal() {
+    if (dialogRef.current) {
+      dialogRef.current.showModal();
+    }
+  }
+
+  function closeModal() {
+    if (dialogRef.current) {
+      dialogRef.current.close();
+    }
+  }
+
+  // POST DATA (UPDATE VALUE 'active' COLUMN PRODUCT TABLE)
+  const handleToggleVisibility = async (productId, isActive) => {
+    const { error } = await supabase
+      .from("product")
+      .update({ active: isActive })
+      .eq("id", productId);
+
+    if (error) {
+      console.error("Gagal mengubah status aktif:", error.message);
+      alert("Gagal update status aktif");
+      return;
+    }
+
+    console.log(
+      `Produk ${productId} sekarang ${isActive ? "aktif" : "nonaktif"}`
+    );
+
+    fetchData();
+  };
+
+  // POST DATA (DELETE 1 ROW)
+  async function deleteProduct(productId) {
+    const { error } = await supabase
+      .from("product")
+      .delete()
+      .eq("id", productId);
+
+    if (error) {
+      console.error("Gagal menghapus:", error.message);
+      alert("Gagal menghapus produk");
+    } else {
+      alert("Produk berhasil dihapus");
+    }
+  }
+
   return (
     <div className='w-screen h-screen bg-[#FFFDED]'>
-      {loading && <p>Loading...</p>}
       {error && <p className='text-red-500'>{error}</p>}
 
       {/* Top Bar */}
       <TopBar />
 
       {/* Main Dashboard */}
-      <div className='absolute top-80 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center'>
+      <div className='m-12 flex items-center justify-center'>
         <div className='flex flex-row gap-4'>
-          <div>
-            <button
-              onClick={openModal}
-              className='cursor-pointer flex items-center gap-2 px-10 py-4 bg-[#9DA588] hover:bg-[#3A4D39] text-[#FFFDED] rounded-xl'
-            >
-              <FiPlus size={20} />
-              <span>Tambah Menu</span>
-            </button>
-            <div className='flex flex-col border-2 border-[#9BA38D] w-80 p-4 rounded-xl mt-5 overflow-y-scroll h-96 '>
-              <ul>
-                {products.map((product) => (
-                  <li key={product.id} className='mb-1'>
-                    <div className='flex flex-row bg-[#9BA38D] rounded-xl border-0 w-[250px]'>
-                      <div>
-                        <img
-                          src={product.image_url}
-                          alt={product.name}
-                          className='h-20 w-25 rounded-l-2xl border-0'
-                        />
-                      </div>
-                      <div className='flex items-center justify-items-start p-2 w-28'>
-                        <p className='text-sm text-[#3A4D39] font-medium'>
-                          {product.name}
-                        </p>
-                      </div>
-                      <div className='flex items-center justify-start pr-4 space-x-2 w-14'>
-                        <input
-                          type='checkbox'
-                          defaultChecked
-                          onChange={(e) => {
-                            handleToggleVisbility(product.id, e.target.checked);
-                          }}
-                          className='toggle bg-[#FFFDED] text-gray-400 checked:bg-[#3A4D39] border-0'
-                        />
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className='w-[55rem] border-2 border-[#9BA38D] rounded-xl h-[29rem] overflow-y-scroll'>
-            <ul className='flex flex-col gap-3 mt-5'>
-              {products
-                .filter((product) => !hiddenIds.includes(product.id))
-                .map((product) => (
-                  <li key={product.id} className=' ml-5'>
-                    <div className='bg-[#9BA38D] w-[52rem] h-36 rounded-md flex flex-row'>
-                      <div className='w-[12rem] h-36 rounded-l-md'>
-                        <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
-                      </div>
-                      <div className='w-[30rem]  m-4'>
-                        <h1 className='text-xl text-[#3A4D39] font-bold'>
-                          {product.name}
-                        </h1>
-                        <p className='text-sm mt-2'>{product.desk}</p>
-                      </div>
-                      <div className='flex flex-col justify-center items-center w-[10rem]  gap-8'>
+          {sellerId ? (
+            <div>
+              <button
+                onClick={openModal}
+                className='cursor-pointer flex items-center gap-2 px-10 py-4 bg-[#9DA588] hover:bg-[#3A4D39] text-[#FFFDED] rounded-xl'
+              >
+                <FiPlus size={20} />
+                <span>Tambah Menu</span>
+              </button>
+              <div className='flex flex-col border-2 border-[#9BA38D] w-80 p-4 rounded-xl mt-5 overflow-y-scroll h-96 '>
+                <ul>
+                  {products.map((product) => (
+                    <li key={product.id} className='mb-1'>
+                      <div className='flex flex-row bg-[#9BA38D] rounded-xl border-0 w-[250px]'>
                         <div>
-                          <p className='text-xl text-[#3A4D39] font-bold'>
-                            Rp.{product.price}
+                          <img
+                            src={product.image_url}
+                            alt={product.name}
+                            className='h-20 w-25 rounded-l-2xl border-0'
+                          />
+                        </div>
+                        <div className='flex items-center justify-items-start p-2 w-28'>
+                          <p className='text-sm text-[#3A4D39] font-medium'>
+                            {product.name}
                           </p>
                         </div>
-                        <div className='flex flex-row gap-7'>
-                          <button className='cursor-pointer'>
-                            <FaTrash className='text-2xl text-black' />
-                          </button>
-                          <button className='cursor-pointer'>
-                            <FaRegEdit className='text-2xl text-black' />
-                          </button>
+                        <div className='flex items-center justify-start pr-4 space-x-2 w-14'>
+                          <input
+                            id={product.id}
+                            type='checkbox'
+                            defaultChecked={product.active}
+                            onChange={(e) => {
+                              handleToggleVisibility(
+                                product.id,
+                                e.target.checked
+                              );
+                            }}
+                            className='toggle bg-[#FFFDED] text-gray-400 checked:bg-[#3A4D39] border-0'
+                          />
                         </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
-            </ul>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ) : undefined}
+          <div className='w-[55rem] border-2 border-[#9BA38D] rounded-xl h-[29rem] overflow-y-scroll p-5'>
+            {loading ? (
+              <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-[#9BA38D] mx-auto mb-4'></div>
+            ) : (
+              <ul className='flex flex-col gap-3 mt-5'>
+                {products
+                  .filter((product) => product.active)
+                  .map((product) => (
+                    <li key={product.id} className=' ml-5'>
+                      <div className='bg-[#9BA38D] w-[52rem] h-36 rounded-md flex flex-row'>
+                        <div className='w-[12rem] h-36 rounded-l-md'>
+                          <img
+                            src={product.image_url}
+                            alt={product.name}
+                            className='w-full h-full object-cover'
+                          />
+                        </div>
+                        <div className='w-[30rem]  m-4'>
+                          <h1 className='text-xl text-[#3A4D39] font-bold'>
+                            {product.name}
+                          </h1>
+                          <p className='text-sm mt-2'>{product.desk}</p>
+                        </div>
+                        <div className='flex flex-col justify-center items-center w-[10rem]  gap-8'>
+                          <div>
+                            <p className='text-xl text-[#3A4D39] font-bold'>
+                              Rp.{product.price}
+                            </p>
+                          </div>
+                          <div className='flex flex-row gap-7'>
+                            <button className='cursor-pointer'>
+                              <FaTrash
+                                className={`text-2xl text-[#FFFDED] ${
+                                  sellerId ? "" : "hidden"
+                                }`}
+                                onClick={() => deleteProduct(product.id)}
+                              />
+                            </button>
+                            <button className='cursor-pointer rs'>
+                              <FaRegEdit
+                                className={`text-2xl text-[#FFFDED] ${
+                                  sellerId ? "" : "hidden"
+                                }`}
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+              </ul>
+            )}
           </div>
         </div>
       </div>
