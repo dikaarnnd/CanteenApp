@@ -23,7 +23,7 @@ export default function Profile() {
 
       try {
         const { data, error } = await supabase
-          .from('mahasiswa') // Replace with your actual table name
+          .from('mhs') // Replace with your actual table name
           .select('nim, nama')
           .eq('nim', nim)
           .single();
