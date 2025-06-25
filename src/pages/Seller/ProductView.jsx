@@ -152,21 +152,6 @@ export default function ProductView() {
     fetchData();
   };
 
-  // POST DATA (DELETE 1 ROW)
-  async function deleteProduct(productId) {
-    const { error } = await supabase
-      .from("product")
-      .delete()
-      .eq("id", productId);
-
-    if (error) {
-      console.error("Gagal menghapus:", error.message);
-      alert("Gagal menghapus produk");
-    } else {
-      alert("Produk berhasil dihapus");
-    }
-  }
-
   return (
     <div className='w-screen h-screen bg-[#FFFDED]'>
       {error && <p className='text-red-500'>{error}</p>}
