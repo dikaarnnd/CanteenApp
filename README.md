@@ -36,16 +36,9 @@ A comprehensive digital canteen management system designed specifically for univ
 ## 📱 Application Interface
 
 ### Student Dashboard
-<!-- Add your student dashboard image here -->
 ![image](https://github.com/user-attachments/assets/6609beff-ed11-488a-af7b-04e2d6854485)
 *Browse vendors and place orders with ease*
 
 ### Vendor Dashboard
-<!-- Add your vendor dashboard image here -->
 ![image](https://github.com/user-attachments/assets/bddcef95-892a-443a-901d-74b2ff3a35ff)
 *Comprehensive analytics dashboard with pie charts showing sales distribution*
-
-### Order Management
-<!-- Add your order management image here -->
-![Order Management](path/to/your/order-management-image.png)
-*Real-time order tracking and status updates*
