@@ -1,5 +1,6 @@
 # 🍽️ CanteenApp
 ![Kanteen](https://github.com/user-attachments/assets/72c11a24-db40-4f0e-9e59-ae171fc96a29)
+
 A comprehensive digital canteen management system designed specifically for university environments, connecting students with campus food vendors through a seamless React-powered platform.
 
 ## 📖 About The Project
