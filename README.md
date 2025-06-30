@@ -1,3 +1,5 @@
+![Kanteen](https://github.com/user-attachments/assets/72c11a24-db40-4f0e-9e59-ae171fc96a29)
+
 # 🍽️ CanteenApp
 
 A comprehensive digital canteen management system designed specifically for university environments, connecting students with campus food vendors through a seamless React-powered platform.
@@ -36,12 +38,12 @@ A comprehensive digital canteen management system designed specifically for univ
 
 ### Student Dashboard
 <!-- Add your student dashboard image here -->
-![Student Dashboard](path/to/your/student-dashboard-image.png)
+![image](https://github.com/user-attachments/assets/6609beff-ed11-488a-af7b-04e2d6854485)
 *Browse vendors and place orders with ease*
 
 ### Vendor Dashboard
 <!-- Add your vendor dashboard image here -->
-![Vendor Dashboard](path/to/your/vendor-dashboard-image.png)
+![image](https://github.com/user-attachments/assets/bddcef95-892a-443a-901d-74b2ff3a35ff)
 *Comprehensive analytics dashboard with pie charts showing sales distribution*
 
 ### Order Management
